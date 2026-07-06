@@ -2,6 +2,7 @@ import { createBrowserRouter, Navigate } from "react-router";
 import Layout from "./components/Layout";
 import Home from "./pages/Home";
 import Register from "./pages/Register";
+import Login from "./pages/Login";
 import Mentorship from "./pages/Mentorship";
 import Articles from "./pages/Articles";
 import Marketplace from "./pages/Marketplace";
@@ -27,6 +28,7 @@ export const router = createBrowserRouter([
     children: [
       { index: true, Component: Home },
       { path: "register", Component: Register },
+      { path: "login", Component: Login },
       { path: "mentorship", Component: Mentorship },
       { path: "articles", Component: Articles },
       { path: "services", Component: Marketplace },

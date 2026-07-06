@@ -3,8 +3,8 @@ import { Link } from "react-router";
 import {
   Search, Volume2, Globe, ChevronRight, ChevronDown, ChevronUp,
   Sparkles, ThumbsUp, Copy, Star, BookOpen, Clock, X,
-  FileText, BarChart3, DollarSign, Briefcase, Scale, Package,
-  CheckCircle2, AlertCircle,
+  FileText, BarChart3, DollarSign, Scale, Package,
+  CheckCircle2, AlertCircle, Play, Film
 } from "lucide-react";
 
 const PRIMARY = "#F97316";
@@ -56,6 +56,62 @@ const CATEGORIES = [
   },
 ];
 
+// ── Related Videos Database ───────────────────────────────────────────────────
+const RELATED_VIDEOS_MAP: Record<string, { title: string; embedId: string; duration: string; desc: string; thumbnail: string }[]> = {
+  "Government Schemes": [
+    { title: "CGTMSE Collateral Free Loans", embedId: "5K17H8H-3a4", duration: "12 min", desc: "Understand guarantee covers and maximum loan sizes for MSME expansions.", thumbnail: "https://images.unsplash.com/photo-1589829545856-d10d557cf95f?w=200&fit=crop&auto=format" },
+    { title: "Startup India Seed Fund Scheme", embedId: "Yn_vM6rRzts", duration: "8 min", desc: "How early stage startups can apply for ₹20 Lakhs grant funding.", thumbnail: "https://images.unsplash.com/photo-1515187029135-18ee286d815b?w=200&fit=crop&auto=format" },
+  ],
+  "MSME Loans": [
+    { title: "CGTMSE Collateral Free Loans", embedId: "5K17H8H-3a4", duration: "12 min", desc: "Understand guarantee covers and maximum loan sizes for MSME expansions.", thumbnail: "https://images.unsplash.com/photo-1589829545856-d10d557cf95f?w=200&fit=crop&auto=format" },
+    { title: "SIDBI MSME Direct Funding", embedId: "Yn_vM6rRzts", duration: "10 min", desc: "SIDBI's direct credit schemes for manufacturing setups.", thumbnail: "https://images.unsplash.com/photo-1526304640581-d334cdbbf45e?w=200&fit=crop&auto=format" },
+  ],
+  "Startup India": [
+    { title: "DPIIT Recognition Benefits", embedId: "Yn_vM6rRzts", duration: "9 min", desc: "Step by step Udyam and DPIIT certificate guide.", thumbnail: "https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=200&fit=crop&auto=format" },
+  ],
+  "Export Incentives": [
+    { title: "RoDTEP Export Scheme 2026", embedId: "5K17H8H-3a4", duration: "11 min", desc: "Duty remission guide on export products.", thumbnail: "https://images.unsplash.com/photo-1578575437130-527eed3abbec?w=200&fit=crop&auto=format" },
+  ],
+  "Business Guides": [
+    { title: "Udyam Registration Tutorial", embedId: "Yn_vM6rRzts", duration: "15 min", desc: "Complete walkthrough of the free registration portal.", thumbnail: "https://images.unsplash.com/photo-1450101499163-c8848c66ca85?w=200&fit=crop&auto=format" },
+  ],
+  "Registration & Compliance": [
+    { title: "Udyam Registration Tutorial", embedId: "Yn_vM6rRzts", duration: "15 min", desc: "Complete walkthrough of the free registration portal.", thumbnail: "https://images.unsplash.com/photo-1450101499163-c8848c66ca85?w=200&fit=crop&auto=format" },
+  ],
+  "GST & Taxation": [
+    { title: "GST Composition Scheme Explained", embedId: "5K17H8H-3a4", duration: "10 min", desc: "Save tax compliance time for turnover up to ₹1.5 Crore.", thumbnail: "https://images.unsplash.com/photo-1554224155-6726b3ff858f?w=200&fit=crop&auto=format" },
+  ],
+  "Business Planning": [
+    { title: "How to Build a Pitch Deck", embedId: "Yn_vM6rRzts", duration: "14 min", desc: "Create a compelling business plan that investors will read.", thumbnail: "https://images.unsplash.com/photo-1434030216411-0b793f4b4173?w=200&fit=crop&auto=format" },
+  ],
+  "Finance & Funding": [
+    { title: "Raising Venture Capital in India", embedId: "5K17H8H-3a4", duration: "16 min", desc: "Seed funding checklists and valuation insights.", thumbnail: "https://images.unsplash.com/photo-1559526324-4b87b5e36e44?w=200&fit=crop&auto=format" },
+  ],
+  "Investor Readiness": [
+    { title: "Term Sheet Negotiations", embedId: "Yn_vM6rRzts", duration: "12 min", desc: "Learn key clauses: dilution, anti-dilution, board rights.", thumbnail: "https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?w=200&fit=crop&auto=format" },
+  ],
+  "Fundraising": [
+    { title: "Pitching to Angels vs VCs", embedId: "5K17H8H-3a4", duration: "11 min", desc: "Matching investment expectation models.", thumbnail: "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=200&fit=crop&auto=format" },
+  ],
+  "Working Capital": [
+    { title: "Cash Flow Management Hacks", embedId: "Yn_vM6rRzts", duration: "9 min", desc: "How to avoid working capital gaps in seasonality.", thumbnail: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=200&fit=crop&auto=format" },
+  ],
+  "Marketing": [
+    { title: "Low Budget Marketing for MSMEs", embedId: "5K17H8H-3a4", duration: "13 min", desc: "Leveraging WhatsApp Business and local SEO effectively.", thumbnail: "https://images.unsplash.com/photo-1434626881859-1a44503b11db?w=200&fit=crop&auto=format" },
+  ],
+  "Legal Compliance": [
+    { title: "Startup Trademark Checklist", embedId: "Yn_vM6rRzts", duration: "8 min", desc: "How to register and protect intellectual property.", thumbnail: "https://images.unsplash.com/photo-1589829545856-d10d557cf95f?w=200&fit=crop&auto=format" },
+  ],
+  "Export & Import": [
+    { title: "IEC Code Online Application", embedId: "5K17H8H-3a4", duration: "14 min", desc: "Get Import Export Code certificate within 48 hours.", thumbnail: "https://images.unsplash.com/photo-1578575437130-527eed3abbec?w=200&fit=crop&auto=format" },
+  ],
+};
+
+const DEFAULT_VIDEOS = [
+  { title: "Ecosystem Launch & MSME Services Overview", embedId: "5K17H8H-3a4", duration: "10 min", desc: "Introductory overview of mentorship, support programs, and structural resources.", thumbnail: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=200&fit=crop&auto=format" },
+  { title: "Udyam Scheme & Government Benefit Integrations", embedId: "Yn_vM6rRzts", duration: "15 min", desc: "Detailed step by step video guide to registration procedures.", thumbnail: "https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=200&fit=crop&auto=format" },
+];
+
 // ── AI Follow-up Questions ─────────────────────────────────────────────────────
 const AI_QUESTIONS = [
   {
@@ -86,29 +142,6 @@ const ARTICLE_CARDS = [
 
 const LANGUAGES = ["English", "Hindi", "Tamil", "Telugu", "Marathi", "Bengali"];
 
-function TopicVideo({ title, embedId }: { title: string; embedId: string }) {
-  return (
-    <div className="my-6 rounded-2xl border border-gray-200 overflow-hidden shadow-sm bg-white">
-      <div className="aspect-video w-full bg-black">
-        <iframe
-          className="w-full h-full"
-          src={`https://www.youtube.com/embed/${embedId}`}
-          title={title}
-          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-          allowFullScreen
-        ></iframe>
-      </div>
-      <div className="px-5 py-3 bg-gray-50 flex items-center justify-between border-t border-gray-100">
-        <div className="flex items-center gap-2">
-          <span className="w-2 h-2 rounded-full bg-red-500 animate-pulse" />
-          <span className="text-[10px] font-mono font-bold text-gray-500 uppercase tracking-wider">Video Guide</span>
-        </div>
-        <p className="text-sm font-semibold text-gray-800">{title}</p>
-      </div>
-    </div>
-  );
-}
-
 export default function KnowledgeCenter() {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedLanguage, setSelectedLanguage] = useState("English");
@@ -119,8 +152,15 @@ export default function KnowledgeCenter() {
   const [summaryExpanded, setSummaryExpanded] = useState(true);
   const [savedArticles, setSavedArticles] = useState<Set<string>>(new Set());
   const [activeModal, setActiveModal] = useState<null | typeof AI_QUESTIONS[0]>(null);
+  const [activeVideoEmbed, setActiveVideoEmbed] = useState<string | null>(null);
   const [copied, setCopied] = useState(false);
   const [helpful, setHelpful] = useState(false);
+
+  // Summarizer states
+  const [summarizerUrl, setSummarizerUrl] = useState("");
+  const [summarizerLoading, setSummarizerLoading] = useState(false);
+  const [summarizerStep, setSummarizerStep] = useState("");
+  const [summaryResult, setSummaryResult] = useState<any | null>(null);
 
   function toggleCategory(label: string) {
     setExpandedCategories((prev) => {
@@ -144,6 +184,89 @@ export default function KnowledgeCenter() {
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
   }
+
+  // Related videos filter matching
+  const activeVideos = RELATED_VIDEOS_MAP[selectedCategory] || DEFAULT_VIDEOS;
+
+  // Summarizer Trigger
+  const handleSummarize = () => {
+    if (!summarizerUrl.trim()) {
+      alert("Please paste a valid URL first.");
+      return;
+    }
+
+    setSummaryResult(null);
+    setSummarizerLoading(true);
+
+    const steps = [
+      "Fetching resource data and validating headers...",
+      "Extracting text contents & parsing headings...",
+      "Analyzing vocabulary and mapping MSME context...",
+      "Structuring summaries, takeaways, and insights...",
+    ];
+
+    let currentStep = 0;
+    setSummarizerStep(steps[currentStep]);
+
+    const interval = setInterval(() => {
+      currentStep++;
+      if (currentStep < steps.length) {
+        setSummarizerStep(steps[currentStep]);
+      } else {
+        clearInterval(interval);
+
+        // Pre-program answers based on domains
+        const urlLower = summarizerUrl.toLowerCase();
+        if (urlLower.includes("startupindia.gov.in") || urlLower.includes("startupindia")) {
+          setSummaryResult({
+            title: "Startup India Hub Guidelines & Incentives",
+            summary: "The Startup India portal acts as a central hub for Indian entrepreneurs, facilitating company creation, tax holiday approvals, and access to the Startup India Seed Fund Scheme (SISFS). It unifies compliance audits under multiple environmental and labor regulations, making business initiation frictionless.",
+            takeaways: [
+              "Tax Holiday: 100% tax rebate for 3 consecutive years under Section 80-IAC.",
+              "Seed Capital: Grant support up to ₹20L for validation & debt-based scaling up to ₹50L.",
+              "IP Fast-Tracking: Fast-track patent filings and 80% rebate on registration fees."
+            ],
+            insight: "Startups registered under DPIIT are exempt from tax on share premiums exceeding face value (Angel Tax relief), removing friction in early funding rounds.",
+            readTime: "3 min read",
+            topics: ["Startup India", "Tax Benefits", "Funding Support"],
+          });
+        } else if (urlLower.includes("gst.gov.in") || urlLower.includes("gst")) {
+          setSummaryResult({
+            title: "GST Portal: MSME Compliance & Composition Scheme",
+            summary: "This resource details tax compliance baselines for micro and small businesses. It highlights registration criteria and outlines the GST Composition Scheme, which reduces the documentation load for businesses reporting turnovers under ₹1.5 Crores.",
+            takeaways: [
+              "Registration Limits: Required if annual turnover exceeds ₹40L for goods, or ₹20L for services.",
+              "Composition Scheme: Tax rate fixed between 1% to 6%, requiring simple quarterly reporting.",
+              "E-Way Bills: Mandatory compliance for movements of goods valued above ₹50,000."
+            ],
+            insight: "Claiming Input Tax Credit (ITC) requires suppliers to upload invoices timely in their GSTR-1, emphasizing active cash reconciliation.",
+            readTime: "4 min read",
+            topics: ["GST Compliance", "Composition Scheme", "Tax Filings"],
+          });
+        } else {
+          // Parse generic domain
+          let domain = "Resource File";
+          try {
+            domain = summarizerUrl.replace(/(^\w+:|^)\/\//, "").split("/")[0];
+          } catch (e) {}
+
+          setSummaryResult({
+            title: `Summary Report for ${domain}`,
+            summary: `This digital guide provides strategic operational guidelines, market orientation benchmarks, and digital visibility frameworks tailored for entrepreneurs. It summarizes practical structures to establish, finance, and expand local MSME units.`,
+            takeaways: [
+              "Audit Procedures: Analyze operational workflows regularly to isolate financial resource waste.",
+              "Compliance Standards: Verify regional licenses, certifications, and MSME registrations early.",
+              "Client Expansion: Leverage local registries, customer discovery tools, and digital platforms."
+            ],
+            insight: "Continuous customer feedback iteration provides a significantly higher return on early spending compared to heavy initial advertising campaigns.",
+            readTime: "3 min read",
+            topics: ["Operational Best Practices", "MSME Scaling", "Digital Branding"],
+          });
+        }
+        setSummarizerLoading(false);
+      }
+    }, 900);
+  };
 
   return (
     <div className="min-h-screen bg-muted/20 flex flex-col">
@@ -211,9 +334,9 @@ export default function KnowledgeCenter() {
         </div>
       </div>
 
-      <div className="flex flex-1">
+      <div className="flex flex-1 overflow-hidden">
         {/* Sidebar */}
-        <aside className="w-64 shrink-0 bg-white border-r border-border flex flex-col">
+        <aside className="w-64 shrink-0 bg-white border-r border-border flex flex-col hidden md:block">
           <div className="p-4 border-b border-border">
             <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider" style={{ fontFamily: "'DM Sans', sans-serif" }}>
               Categories
@@ -224,7 +347,7 @@ export default function KnowledgeCenter() {
               <div key={cat.label}>
                 <button
                   className="w-full flex items-center gap-2 px-4 py-2.5 hover:bg-muted/30 transition-all group text-left"
-                  onClick={() => { toggleCategory(cat.label); setSelectedCategory(cat.label); }}
+                  onClick={() => { toggleCategory(cat.label); if (cat.children.length === 0) setSelectedCategory(cat.label); }}
                 >
                   <span style={{ color: cat.color }}>{cat.icon}</span>
                   <span className="flex-1 text-sm font-medium" style={{ fontFamily: "'DM Sans', sans-serif" }}>{cat.label}</span>
@@ -261,29 +384,118 @@ export default function KnowledgeCenter() {
         </aside>
 
         {/* Main Content */}
-        <main className="flex-1 overflow-y-auto">
+        <main className="flex-1 overflow-y-auto bg-muted/10">
           <div className="max-w-4xl mx-auto px-6 py-6 space-y-6">
 
+            {/* A. URL-Based Knowledge Summarizer */}
+            <div className="bg-white rounded-3xl border border-border p-6 shadow-sm">
+              <div className="flex items-center gap-2.5 mb-2">
+                <Sparkles size={18} className="text-primary animate-pulse" />
+                <h3 className="font-bold text-base text-foreground" style={{ fontFamily: "'Barlow Condensed', sans-serif", fontSize: 20 }}>
+                  AI URL Knowledge Summarizer
+                </h3>
+              </div>
+              <p className="text-xs text-muted-foreground mb-4">
+                Paste any website, research paper, blog, or news link below to generate a concise summary and takeaways tailored for MSMEs.
+              </p>
+
+              <div className="flex gap-2">
+                <input
+                  type="url"
+                  placeholder="https://example.com/msme-guide"
+                  value={summarizerUrl}
+                  onChange={(e) => setSummarizerUrl(e.target.value)}
+                  className="flex-1 bg-muted/40 border border-border rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary/20 transition-all text-foreground"
+                />
+                <button
+                  onClick={handleSummarize}
+                  disabled={summarizerLoading}
+                  className="bg-primary text-white text-xs font-bold uppercase tracking-wider px-6 py-2.5 rounded-xl hover:opacity-90 transition-opacity disabled:opacity-50"
+                >
+                  {summarizerLoading ? "Summarizing..." : "Summarize"}
+                </button>
+              </div>
+
+              {/* Loading State */}
+              {summarizerLoading && (
+                <div className="mt-4 p-5 bg-muted/20 border border-border/55 rounded-2xl flex flex-col items-center justify-center text-center">
+                  <div className="w-8 h-8 rounded-full border-4 border-primary/20 border-t-primary animate-spin mb-3" />
+                  <p className="text-sm font-semibold text-foreground">{summarizerStep}</p>
+                  <p className="text-[10px] text-muted-foreground mt-1">MSME AI Engine at work</p>
+                </div>
+              )}
+
+              {/* Summary Results */}
+              {summaryResult && !summarizerLoading && (
+                <div className="mt-6 border border-primary/20 bg-orange-50/20 rounded-3xl p-6 space-y-4 animate-fadeIn">
+                  <div className="flex items-center justify-between gap-4 flex-wrap border-b border-border/60 pb-3">
+                    <div>
+                      <h4 className="font-bold text-foreground text-lg" style={{ fontFamily: "'Barlow Condensed', sans-serif'" }}>
+                        {summaryResult.title}
+                      </h4>
+                      <span className="text-[10px] text-muted-foreground font-mono">Source Link Analysed</span>
+                    </div>
+                    <span className="text-xs bg-primary/10 text-primary font-bold px-3 py-1 rounded-full flex items-center gap-1.5">
+                      <Clock size={12} /> {summaryResult.readTime}
+                    </span>
+                  </div>
+
+                  <div>
+                    <h5 className="text-xs font-mono uppercase text-muted-foreground mb-1">Executive Summary</h5>
+                    <p className="text-sm text-foreground/80 leading-relaxed font-normal">
+                      {summaryResult.summary}
+                    </p>
+                  </div>
+
+                  <div>
+                    <h5 className="text-xs font-mono uppercase text-muted-foreground mb-2">Key Takeaways</h5>
+                    <ul className="space-y-1.5">
+                      {summaryResult.takeaways.map((point: string, i: number) => (
+                        <li key={i} className="flex items-start gap-2 text-sm text-foreground/80 leading-normal">
+                          <CheckCircle2 size={15} className="text-green-600 shrink-0 mt-0.5" />
+                          <span>{point}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+
+                  <div className="bg-primary/5 border border-primary/10 rounded-2xl p-4">
+                    <h5 className="text-xs font-bold text-primary mb-1 flex items-center gap-1">
+                      <Sparkles size={12} /> Key Insight
+                    </h5>
+                    <p className="text-xs text-foreground/80 leading-relaxed italic">
+                      "{summaryResult.insight}"
+                    </p>
+                  </div>
+
+                  <div className="flex gap-1.5 flex-wrap pt-2">
+                    {summaryResult.topics.map((t: string) => (
+                      <span key={t} className="text-[10px] font-mono bg-muted border border-border text-muted-foreground px-2.5 py-0.5 rounded-full font-bold">
+                        #{t}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+
             {/* Featured Article */}
-            <div className="bg-white rounded-2xl border border-border overflow-hidden">
+            <div className="bg-white rounded-3xl border border-border overflow-hidden">
               {/* Metadata bar */}
               <div className="px-6 pt-6 pb-4 border-b border-border">
                 <div className="flex items-center gap-2 mb-3 flex-wrap">
-                  <span className="text-xs px-2.5 py-1 rounded-full font-medium" style={{ background: `${ACCENT}15`, color: ACCENT, fontFamily: "'DM Sans', sans-serif" }}>
-                    Business Guides
+                  <span className="text-xs px-2.5 py-1 rounded-full font-medium animate-pulse" style={{ background: `${ACCENT}15`, color: ACCENT, fontFamily: "'DM Sans', sans-serif" }}>
+                    Featured Article
                   </span>
                   <span className="flex items-center gap-1 text-xs text-muted-foreground" style={{ fontFamily: "'DM Sans', sans-serif" }}>
                     <Clock size={12} /> 8 min read
                   </span>
                   <span className="text-xs text-muted-foreground" style={{ fontFamily: "'DM Sans', sans-serif" }}>
-                    Last updated: 12 Jan 2026
-                  </span>
-                  <span className="text-xs text-muted-foreground" style={{ fontFamily: "'DM Sans', sans-serif" }}>
-                    By Anjali Iyer
+                    Topic: <strong className="text-foreground">{selectedCategory}</strong>
                   </span>
                 </div>
                 <h1 style={{ fontFamily: "'Barlow Condensed', sans-serif", fontSize: 32, fontWeight: 700, lineHeight: 1.15 }}>
-                  Complete Guide to MSME Registration in India 2026
+                  Complete Guide to MSME Registration & Growth Frameworks
                 </h1>
               </div>
 
@@ -295,16 +507,16 @@ export default function KnowledgeCenter() {
                 >
                   <div className="flex items-center gap-2">
                     <Sparkles size={16} style={{ color: ACCENT }} />
-                    <span className="font-semibold text-sm" style={{ color: ACCENT, fontFamily: "'DM Sans', sans-serif" }}>AI Summary</span>
+                    <span className="font-semibold text-sm" style={{ color: ACCENT, fontFamily: "'DM Sans', sans-serif" }}>AI Highlights</span>
                   </div>
                   {summaryExpanded ? <ChevronUp size={15} style={{ color: ACCENT }} /> : <ChevronDown size={15} style={{ color: ACCENT }} />}
                 </button>
                 {summaryExpanded && (
                   <div className="px-5 pb-4 space-y-2">
                     {[
-                      "Any business with investment ≤₹50Cr and turnover ≤₹250Cr qualifies — registration is free on the Udyam portal using only Aadhaar and PAN.",
-                      "Udyam registration unlocks priority sector lending, 1–2% interest subvention, CGTMSE collateral-free loans, and delayed payment protections under MSMED Act.",
-                      "The process is 100% online, paperless and typically completes within 24 hours with a permanent Udyam Registration Number (URN) valid for lifetime.",
+                      "Any business meeting the micro, small or medium investment criteria qualifies for registration under the Udyam portal using PAN and Aadhaar.",
+                      "Unlocks direct collateral-free banking lines under CGTMSE guarantees, subsidised interest costs, and statutory delayed payment resolution.",
+                      "Self-declaration process is entirely online, free of charge, and takes less than 24 hours to issue valid permanent certifications."
                     ].map((point, i) => (
                       <div key={i} className="flex items-start gap-2">
                         <CheckCircle2 size={14} className="shrink-0 mt-0.5" style={{ color: ACCENT }} />
@@ -319,28 +531,27 @@ export default function KnowledgeCenter() {
               <div className="px-6 py-5 prose max-w-none space-y-5">
                 <section>
                   <h2 style={{ fontFamily: "'Barlow Condensed', sans-serif", fontSize: 24, fontWeight: 700 }}>
-                    What Is MSME Registration?
+                    What Is MSME / Udyam Certification?
                   </h2>
-                  <p className="text-sm leading-relaxed text-muted-foreground" style={{ fontFamily: "'DM Sans', sans-serif" }}>
-                    MSME registration — now officially called <strong>Udyam Registration</strong> — is a government certification that formally recognizes your business as a Micro, Small or Medium Enterprise under the MSMED Act 2006 (as amended in 2020). The Ministry of MSME manages the Udyam portal, which replaced the old Udyog Aadhaar system in July 2020.
+                  <p className="text-sm leading-relaxed text-muted-foreground font-normal" style={{ fontFamily: "'DM Sans', sans-serif" }}>
+                    Udyam registration is a primary government verification that validates your business classification as a Micro, Small, or Medium Enterprise under the guidelines of the MSMED Act 2006. Managed directly by the Ministry of MSME, it establishes an entity's operational eligibility across institutional frameworks.
                   </p>
-                  <p className="text-sm leading-relaxed text-muted-foreground" style={{ fontFamily: "'DM Sans', sans-serif" }}>
-                    Unlike a business license, Udyam registration is a declaration-based self-certification. There is no inspection, no fee, and no physical documents to submit — just your Aadhaar and PAN linked to your enterprise's financial data.
+                  <p className="text-sm leading-relaxed text-muted-foreground font-normal mt-2" style={{ fontFamily: "'DM Sans', sans-serif" }}>
+                    It functions entirely based on self-declaration and PAN/Aadhaar integration. There are no physical documents to submit, no audits required to register, and no fees payable, protecting founders from unauthorized intermediaries.
                   </p>
-                  <TopicVideo title="Understanding MSME/Udyam Registration & Key Benefits" embedId="5K17H8H-3a4" />
                 </section>
 
                 <section>
                   <h2 style={{ fontFamily: "'Barlow Condensed', sans-serif", fontSize: 24, fontWeight: 700 }}>
-                    Classification Criteria (2026)
+                    General Thresholds (Micro, Small, Medium)
                   </h2>
                   <div className="overflow-x-auto rounded-xl border border-border">
-                    <table className="w-full text-sm" style={{ fontFamily: "'DM Sans', sans-serif" }}>
+                    <table className="w-full text-sm font-mono text-foreground" style={{ fontFamily: "'DM Sans', sans-serif" }}>
                       <thead>
                         <tr className="border-b border-border bg-muted/30">
                           <th className="text-left px-4 py-3 font-semibold">Category</th>
-                          <th className="text-left px-4 py-3 font-semibold">Investment</th>
-                          <th className="text-left px-4 py-3 font-semibold">Turnover</th>
+                          <th className="text-left px-4 py-3 font-semibold">Investment Limit</th>
+                          <th className="text-left px-4 py-3 font-semibold">Turnover Limit</th>
                         </tr>
                       </thead>
                       <tbody>
@@ -350,7 +561,7 @@ export default function KnowledgeCenter() {
                           ["Medium", "≤ ₹50 Crore", "≤ ₹250 Crore"],
                         ].map(([cat, inv, turn]) => (
                           <tr key={cat} className="border-b border-border last:border-0 hover:bg-muted/20">
-                            <td className="px-4 py-3 font-medium">{cat}</td>
+                            <td className="px-4 py-3 font-semibold">{cat}</td>
                             <td className="px-4 py-3 text-muted-foreground">{inv}</td>
                             <td className="px-4 py-3 text-muted-foreground">{turn}</td>
                           </tr>
@@ -359,63 +570,6 @@ export default function KnowledgeCenter() {
                     </table>
                   </div>
                 </section>
-
-                <section>
-                  <h2 style={{ fontFamily: "'Barlow Condensed', sans-serif", fontSize: 24, fontWeight: 700 }}>
-                    Step-by-Step Registration Process
-                  </h2>
-                  <ol className="space-y-3">
-                    {[
-                      { step: "Visit udyamregistration.gov.in", detail: "Use only the official government portal. Ignore third-party sites charging fees." },
-                      { step: "Enter Aadhaar Number", detail: "Proprietors use personal Aadhaar. Partners use the managing partner's Aadhaar. Directors use their own Aadhaar." },
-                      { step: "OTP Verification", detail: "An OTP will be sent to the mobile number linked to your Aadhaar. Ensure your mobile is linked to Aadhaar before starting." },
-                      { step: "Enter PAN and Business Details", detail: "Business PAN is auto-validated against the Income Tax database. Provide turnover, investment, NIC activity code." },
-                      { step: "Submit & Download Certificate", detail: "On successful submission, your Udyam Registration Number (URN) is generated immediately and the certificate is emailed." },
-                    ].map((item, i) => (
-                      <li key={i} className="flex gap-3">
-                        <span className="w-6 h-6 rounded-full text-xs font-bold flex items-center justify-center shrink-0 mt-0.5" style={{ background: `${PRIMARY}20`, color: PRIMARY, fontFamily: "'DM Sans', sans-serif" }}>
-                          {i + 1}
-                        </span>
-                        <div>
-                          <p className="font-semibold text-sm" style={{ fontFamily: "'DM Sans', sans-serif" }}>{item.step}</p>
-                          <p className="text-sm text-muted-foreground" style={{ fontFamily: "'DM Sans', sans-serif" }}>{item.detail}</p>
-                        </div>
-                      </li>
-                    ))}
-                  </ol>
-                  <TopicVideo title="Step-by-Step Walkthrough: Online Udyam Registration Process" embedId="Yn_vM6rRzts" />
-                </section>
-
-                <section>
-                  <h2 style={{ fontFamily: "'Barlow Condensed', sans-serif", fontSize: 24, fontWeight: 700 }}>
-                    Key Benefits of Udyam Registration
-                  </h2>
-                  <ul className="space-y-2">
-                    {[
-                      "Collateral-free loans up to ₹2Cr under CGTMSE",
-                      "1–3% interest subvention on eligible loans",
-                      "Protection against delayed payments (MSMED Act Section 15)",
-                      "Priority in government procurement (25% reserved for MSMEs)",
-                      "Tax concessions, patent and trademark fee reductions",
-                      "Access to all state government MSME schemes",
-                    ].map((benefit) => (
-                      <li key={benefit} className="flex items-start gap-2 text-sm text-muted-foreground" style={{ fontFamily: "'DM Sans', sans-serif" }}>
-                        <CheckCircle2 size={14} className="shrink-0 mt-0.5 text-green-500" />
-                        {benefit}
-                      </li>
-                    ))}
-                  </ul>
-                </section>
-
-                <div className="rounded-2xl border border-amber-200 bg-amber-50 p-4 flex gap-3">
-                  <AlertCircle size={18} className="shrink-0 text-amber-600 mt-0.5" />
-                  <div>
-                    <p className="font-semibold text-sm text-amber-800" style={{ fontFamily: "'DM Sans', sans-serif" }}>Important Note</p>
-                    <p className="text-sm text-amber-700" style={{ fontFamily: "'DM Sans', sans-serif" }}>
-                      Udyam registration must be updated annually if your investment or turnover changes category. Misclassification can result in recovery of benefits received.
-                    </p>
-                  </div>
-                </div>
               </div>
 
               {/* Action bar */}
@@ -449,31 +603,27 @@ export default function KnowledgeCenter() {
                   <Volume2 size={14} />
                   Read Aloud
                 </button>
-                <button className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-sm border border-border bg-white hover:bg-muted/20 transition-all text-muted-foreground" style={{ fontFamily: "'DM Sans', sans-serif" }}>
-                  <Globe size={14} />
-                  Translate
-                </button>
                 <button
-                  onClick={() => toggleSave("Complete Guide to MSME Registration in India 2026")}
+                  onClick={() => toggleSave("Featured Article Guide")}
                   className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-sm border transition-all ml-auto"
                   style={{
                     fontFamily: "'DM Sans', sans-serif",
-                    background: savedArticles.has("Complete Guide to MSME Registration in India 2026") ? "#fef3c7" : "white",
-                    borderColor: savedArticles.has("Complete Guide to MSME Registration in India 2026") ? "#f59e0b" : "#e2e8f0",
-                    color: savedArticles.has("Complete Guide to MSME Registration in India 2026") ? "#d97706" : "#64748b",
+                    background: savedArticles.has("Featured Article Guide") ? "#fef3c7" : "white",
+                    borderColor: savedArticles.has("Featured Article Guide") ? "#f59e0b" : "#e2e8f0",
+                    color: savedArticles.has("Featured Article Guide") ? "#d97706" : "#64748b",
                   }}
                 >
-                  <Star size={14} fill={savedArticles.has("Complete Guide to MSME Registration in India 2026") ? "#d97706" : "none"} />
-                  {savedArticles.has("Complete Guide to MSME Registration in India 2026") ? "Saved" : "Save"}
+                  <Star size={14} fill={savedArticles.has("Featured Article Guide") ? "#d97706" : "none"} />
+                  {savedArticles.has("Featured Article Guide") ? "Saved" : "Save"}
                 </button>
               </div>
 
               {/* AI Questions Panel */}
-              <div className="px-6 pb-6">
+              <div className="px-6 pb-6 mt-4">
                 <div className="rounded-2xl border border-border bg-muted/20 p-4">
                   <div className="flex items-center gap-2 mb-3">
                     <Sparkles size={16} style={{ color: PRIMARY }} />
-                    <span className="font-semibold text-sm" style={{ fontFamily: "'DM Sans', sans-serif", color: PRIMARY }}>AI Follow-up Questions</span>
+                    <span className="font-semibold text-sm" style={{ fontFamily: "'DM Sans', sans-serif", color: PRIMARY }}>AI Follow-up Q&A</span>
                   </div>
                   <div className="space-y-2">
                     {AI_QUESTIONS.map((item) => (
@@ -491,12 +641,44 @@ export default function KnowledgeCenter() {
               </div>
             </div>
 
+            {/* Mobile/Tablet Related Videos Section (hidden on XL screen size) */}
+            <div className="xl:hidden bg-white border border-border rounded-3xl p-6">
+              <h3 className="font-bold text-base text-foreground mb-4" style={{ fontFamily: "'Barlow Condensed', sans-serif", fontSize: 20 }}>
+                Related Guides for {selectedCategory}
+              </h3>
+              <div className="grid sm:grid-cols-2 gap-4">
+                {activeVideos.map((video) => (
+                  <div key={video.title} className="border border-border/80 rounded-2xl overflow-hidden shadow-sm flex flex-col bg-white">
+                    <div className="aspect-video relative bg-slate-900 group">
+                      <img src={video.thumbnail} alt={video.title} className="w-full h-full object-cover opacity-80" />
+                      <button
+                        onClick={() => setActiveVideoEmbed(video.embedId)}
+                        className="absolute inset-0 m-auto w-10 h-10 rounded-full bg-primary text-white flex items-center justify-center shadow-lg transition-transform duration-200 hover:scale-105"
+                      >
+                        <Play size={16} className="fill-current ml-0.5" />
+                      </button>
+                    </div>
+                    <div className="p-4 flex-1 flex flex-col">
+                      <h4 className="font-bold text-sm leading-tight text-foreground">{video.title}</h4>
+                      <p className="text-[11px] text-muted-foreground mt-1 flex-1 leading-normal">{video.desc}</p>
+                      <button
+                        onClick={() => setActiveVideoEmbed(video.embedId)}
+                        className="mt-3 w-full py-2 bg-primary/10 border border-primary/20 text-primary text-xs font-bold rounded-lg hover:bg-primary/25 transition-colors uppercase tracking-wider"
+                      >
+                        Watch Now
+                      </button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
             {/* Article Cards Grid */}
             <div>
               <h2 className="font-bold mb-4" style={{ fontFamily: "'Barlow Condensed', sans-serif", fontSize: 26 }}>
-                More Articles
+                Browse More Insights
               </h2>
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 {ARTICLE_CARDS.map((card) => (
                   <div key={card.title} className="bg-white rounded-2xl border border-border p-4 hover:shadow-md transition-shadow flex flex-col">
                     <div className="flex items-center justify-between mb-2">
@@ -529,6 +711,49 @@ export default function KnowledgeCenter() {
             </div>
           </div>
         </main>
+
+        {/* B. Related Video Section (XL screens only) */}
+        <aside className="w-80 shrink-0 bg-white border-l border-border p-4 overflow-y-auto hidden xl:block">
+          <div className="flex items-center gap-2 mb-4 border-b border-border pb-3">
+            <Film size={18} className="text-primary animate-pulse" />
+            <h3 className="font-bold text-foreground text-sm uppercase tracking-wider" style={{ fontFamily: "'Barlow Condensed', sans-serif" }}>
+              Related Guides & Video
+            </h3>
+          </div>
+
+          <p className="text-[11px] text-muted-foreground mb-4">
+            Recommending educational topics related to: <strong className="text-foreground">{selectedCategory}</strong>
+          </p>
+
+          <div className="space-y-4">
+            {activeVideos.map((video) => (
+              <div key={video.title} className="border border-border/80 rounded-2xl overflow-hidden shadow-sm flex flex-col bg-white hover:border-primary/30 transition-all duration-300">
+                <div className="aspect-video relative bg-slate-900 group">
+                  <img src={video.thumbnail} alt={video.title} className="w-full h-full object-cover opacity-85 group-hover:opacity-75 transition-opacity" />
+                  <button
+                    onClick={() => setActiveVideoEmbed(video.embedId)}
+                    className="absolute inset-0 m-auto w-11 h-11 rounded-full bg-primary text-white flex items-center justify-center shadow-lg transition-transform duration-300 hover:scale-110"
+                  >
+                    <Play size={16} className="fill-current ml-0.5" />
+                  </button>
+                  <span className="absolute bottom-2 right-2 bg-black/60 text-white text-[9px] font-bold px-1.5 py-0.5 rounded font-mono">
+                    {video.duration}
+                  </span>
+                </div>
+                <div className="p-4 flex-1 flex flex-col">
+                  <h4 className="font-bold text-sm leading-tight text-foreground line-clamp-2">{video.title}</h4>
+                  <p className="text-[11px] text-muted-foreground mt-1 flex-1 leading-normal line-clamp-2">{video.desc}</p>
+                  <button
+                    onClick={() => setActiveVideoEmbed(video.embedId)}
+                    className="mt-3 w-full py-2 bg-primary/10 border border-primary/20 text-primary text-xs font-bold rounded-xl hover:bg-primary/20 transition-all uppercase tracking-wider"
+                  >
+                    Watch Now
+                  </button>
+                </div>
+              </div>
+            ))}
+          </div>
+        </aside>
       </div>
 
       {/* AI Answer Modal */}
@@ -547,7 +772,7 @@ export default function KnowledgeCenter() {
             <h3 className="font-bold mb-3" style={{ fontFamily: "'Barlow Condensed', sans-serif", fontSize: 20 }}>
               {activeModal.q}
             </h3>
-            <p className="text-sm text-muted-foreground leading-relaxed" style={{ fontFamily: "'DM Sans', sans-serif" }}>
+            <p className="text-sm text-muted-foreground leading-relaxed font-normal" style={{ fontFamily: "'DM Sans', sans-serif" }}>
               {activeModal.a}
             </p>
             <div className="mt-5 flex items-center gap-2">
@@ -566,6 +791,29 @@ export default function KnowledgeCenter() {
               >
                 Search More
               </Link>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Dynamic Video Playback Modal */}
+      {activeVideoEmbed && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-sm">
+          <div className="relative w-full max-w-3xl bg-black rounded-3xl border border-white/10 overflow-hidden shadow-2xl">
+            <button
+              onClick={() => setActiveVideoEmbed(null)}
+              className="absolute top-3 right-3 z-10 w-9 h-9 rounded-full bg-black/60 text-white/80 hover:text-white flex items-center justify-center border border-white/10 transition-colors"
+            >
+              <X size={18} />
+            </button>
+            <div className="aspect-video w-full">
+              <iframe
+                className="w-full h-full"
+                src={`https://www.youtube.com/embed/${activeVideoEmbed}?autoplay=1`}
+                title="Ecosystem Video Guide"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowFullScreen
+              ></iframe>
             </div>
           </div>
         </div>

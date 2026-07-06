@@ -20,6 +20,8 @@ import {
   Trash2,
   BookOpen,
   Video,
+  Brain,
+  Award,
 } from "lucide-react";
 
 function cn(...classes: (string | false | undefined | null)[]) {
@@ -50,10 +52,49 @@ const PENDING_MENTORS = [
   },
 ];
 
-const REGISTERED_USERS = [
-  { name: "Priya Mehta", type: "Entrepreneur", category: "Startup Founder", need: "Fundraising + Marketing", status: "Active" },
-  { name: "Rahul Verma", type: "Trainee", category: "Idea Explorer", need: "Training + Idea Validation", status: "Active" },
-  { name: "Amit Kumar", type: "Entrepreneur", category: "MSME Owner", need: "Business Consultancy", status: "Under Review" },
+const STATIC_USERS = [
+  {
+    name: "Priya Mehta",
+    type: "Entrepreneur",
+    category: "Startup Founder",
+    need: "Fundraising + Marketing",
+    status: "Active",
+    assessment: {
+      behavioralScore: 43,
+      businessScore: 45,
+      overallScore: 88,
+      summary: "Balanced Founder-Operator: Strong leadership, emotional intelligence, and high business acumen. Ideal candidate for direct investment matching.",
+      submittedAt: "2026-06-18",
+    },
+  },
+  {
+    name: "Rahul Verma",
+    type: "Trainee",
+    category: "Idea Explorer",
+    need: "Training + Idea Validation",
+    status: "Active",
+    assessment: {
+      behavioralScore: 38,
+      businessScore: 34,
+      overallScore: 72,
+      summary: "Developing Aspiring Entrepreneur: Strong execution capabilities, but requires mentorship in strategic planning and financial scaling.",
+      submittedAt: "2026-06-20",
+    },
+  },
+  {
+    name: "Amit Kumar",
+    type: "Entrepreneur",
+    category: "MSME Owner",
+    need: "Business Consultancy",
+    status: "Under Review",
+    assessment: {
+      behavioralScore: 37,
+      businessScore: 42,
+      overallScore: 79,
+      summary: "Strategic Business Visionary: High business planning skills and market awareness. Needs support in developing team leadership.",
+      submittedAt: "2026-06-21",
+    },
+  },
 ];
 
 const NOTICES = [
@@ -85,6 +126,26 @@ export default function DashboardAdmin() {
   const [notices, setNotices] = useState(NOTICES);
   const [noticeText, setNoticeText] = useState("");
   const [noticeTitle, setNoticeTitle] = useState("");
+  const [selectedUserReport, setSelectedUserReport] = useState<any | null>(null);
+
+  const [registeredUsers, setRegisteredUsers] = useState(() => {
+    const local = localStorage.getItem("msme_users");
+    const parsed = local ? JSON.parse(local) : [];
+
+    const formattedLocal = parsed.map((u: any) => ({
+      name: u.name,
+      type: u.role.charAt(0).toUpperCase() + u.role.slice(1),
+      category: u.details?.entrepreneurType || u.details?.traineeType || "General",
+      need: u.services?.join(" + ") || "General Support",
+      status: "Active",
+      assessment: u.assessment,
+      email: u.email,
+      phone: u.phone,
+      location: u.location,
+    }));
+
+    return [...formattedLocal, ...STATIC_USERS];
+  });
 
   const approve = (name: string) => setMentors((m) => m.map((x) => (x.name === name ? { ...x, status: "Approved" } : x)));
   const reject = (name: string) => setMentors((m) => m.map((x) => (x.name === name ? { ...x, status: "Rejected" } : x)));
@@ -239,16 +300,34 @@ export default function DashboardAdmin() {
                   <th className="text-left px-6 py-3 text-xs font-mono uppercase tracking-wider text-muted-foreground">Type</th>
                   <th className="text-left px-6 py-3 text-xs font-mono uppercase tracking-wider text-muted-foreground">Category</th>
                   <th className="text-left px-6 py-3 text-xs font-mono uppercase tracking-wider text-muted-foreground">Support Needed</th>
+                  <th className="text-left px-6 py-3 text-xs font-mono uppercase tracking-wider text-muted-foreground">Psychometric Report</th>
                   <th className="text-left px-6 py-3 text-xs font-mono uppercase tracking-wider text-muted-foreground">Status</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-border">
-                {REGISTERED_USERS.map((user) => (
+                {registeredUsers.map((user) => (
                   <tr key={user.name} className="hover:bg-muted/20">
                     <td className="px-6 py-4 text-sm font-semibold text-foreground">{user.name}</td>
                     <td className="px-6 py-4 text-sm text-muted-foreground">{user.type}</td>
                     <td className="px-6 py-4 text-sm text-muted-foreground">{user.category}</td>
                     <td className="px-6 py-4 text-sm text-muted-foreground">{user.need}</td>
+                    <td className="px-6 py-4">
+                      {user.assessment ? (
+                        <div className="flex items-center gap-2">
+                          <span className="text-xs font-mono bg-orange-50 border border-orange-200 text-primary px-2.5 py-0.5 rounded-full font-bold">
+                            {user.assessment.overallScore}/100
+                          </span>
+                          <button
+                            onClick={() => setSelectedUserReport(user)}
+                            className="text-xs flex items-center gap-1 text-[#2563EB] hover:underline font-semibold"
+                          >
+                            <Brain size={12} /> View Report
+                          </button>
+                        </div>
+                      ) : (
+                        <span className="text-xs text-muted-foreground">Not Assessed</span>
+                      )}
+                    </td>
                     <td className="px-6 py-4"><span className="text-xs font-semibold px-2.5 py-1 rounded-full border bg-green-50 border-green-200 text-green-700">{user.status}</span></td>
                   </tr>
                 ))}
@@ -433,6 +512,90 @@ export default function DashboardAdmin() {
 
         <div className="text-center"><Link to="/" className="text-sm text-muted-foreground hover:text-foreground transition-colors">← Back to Home</Link></div>
       </div>
+
+      {/* Psychometric Assessment Report Modal */}
+      {selectedUserReport && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-6 bg-black/50 backdrop-blur-sm">
+          <div className="bg-white rounded-3xl border border-border shadow-2xl max-w-lg w-full p-6 relative">
+            <button
+              onClick={() => setSelectedUserReport(null)}
+              className="absolute top-4 right-4 text-muted-foreground hover:text-foreground transition-colors"
+            >
+              <X size={18} />
+            </button>
+
+            <div className="flex items-center gap-2.5 mb-4">
+              <Brain size={20} className="text-primary animate-pulse" />
+              <span className="text-xs font-mono uppercase tracking-widest text-primary font-bold">
+                Psychometric Report
+              </span>
+            </div>
+
+            <h3 className="text-xl font-bold text-foreground mb-1">
+              {selectedUserReport.name}
+            </h3>
+            <p className="text-xs text-muted-foreground mb-4">
+              Role: <strong className="text-foreground">{selectedUserReport.type}</strong> &middot; Sub-Category: <strong className="text-foreground">{selectedUserReport.category}</strong>
+            </p>
+
+            <div className="space-y-4 mb-6">
+              <div className="bg-muted/30 border border-border/60 rounded-2xl p-4 text-center">
+                <span className="text-xs text-muted-foreground block font-mono">OVERALL ASSESSMENT SCORE</span>
+                <span className="text-4xl font-extrabold text-primary font-mono mt-1 block">
+                  {selectedUserReport.assessment.overallScore}
+                  <span className="text-xs text-muted-foreground font-normal">/100</span>
+                </span>
+                <span className="text-[10px] text-muted-foreground mt-1 block font-mono">Submitted: {selectedUserReport.assessment.submittedAt}</span>
+              </div>
+
+              <div className="space-y-2">
+                <div>
+                  <div className="flex justify-between text-xs font-mono mb-1">
+                    <span>Behavioral Traits</span>
+                    <span className="font-bold">{selectedUserReport.assessment.behavioralScore}/50</span>
+                  </div>
+                  <div className="w-full bg-muted h-2 rounded-full overflow-hidden">
+                    <div
+                      className="bg-blue-600 h-full rounded-full transition-all duration-500"
+                      style={{ width: `${(selectedUserReport.assessment.behavioralScore / 50) * 100}%` }}
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <div className="flex justify-between text-xs font-mono mb-1">
+                    <span>Business Orientation</span>
+                    <span className="font-bold">{selectedUserReport.assessment.businessScore}/50</span>
+                  </div>
+                  <div className="w-full bg-muted h-2 rounded-full overflow-hidden">
+                    <div
+                      className="bg-green-600 h-full rounded-full transition-all duration-500"
+                      style={{ width: `${(selectedUserReport.assessment.businessScore / 50) * 100}%` }}
+                    />
+                  </div>
+                </div>
+              </div>
+
+              <div className="bg-orange-50 border border-orange-200 rounded-2xl p-4 flex gap-3">
+                <Award size={18} className="text-primary shrink-0 mt-0.5" />
+                <div>
+                  <h4 className="text-xs font-bold text-orange-800">Ecosystem Fit & Personality Profile</h4>
+                  <p className="text-xs text-orange-700 mt-1 leading-relaxed">
+                    {selectedUserReport.assessment.summary}
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <button
+              onClick={() => setSelectedUserReport(null)}
+              className="w-full bg-primary text-white py-3 rounded-full text-sm font-bold hover:opacity-90 transition-opacity"
+            >
+              Close Report
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

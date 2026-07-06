@@ -12,6 +12,9 @@ import {
   User,
   MapPin,
   ShieldCheck,
+  Brain,
+  Award,
+  Sparkles,
 } from "lucide-react";
 
 function cn(...classes: (string | false | undefined | null)[]) {
@@ -19,7 +22,7 @@ function cn(...classes: (string | false | undefined | null)[]) {
 }
 
 type Role = "mentor" | "entrepreneur" | "trainee" | null;
-type Step = "role" | "basic" | "details" | "services";
+type Step = "role" | "basic" | "details" | "services" | "psychometric" | "summary";
 
 const EXPERTISE_OPTIONS = [
   "Startup Strategy",
@@ -90,6 +93,54 @@ const TRAINEE_SUPPORT_OPTIONS = [
   { id: "technology_guidance", label: "Technology Guidance", desc: "Understand how to build your idea", icon: Building2 },
   { id: "startup_guidance", label: "Startup Guidance", desc: "Learn how to start and grow", icon: Briefcase },
 ];
+
+// Psychometric Questions (10 Behavioral, 10 Business Orientation)
+interface PsychQuestion {
+  id: number;
+  section: "Behavioral" | "Business";
+  trait: string;
+  text: string;
+}
+
+const PSYCH_QUESTIONS: PsychQuestion[] = [
+  // Behavioral Assessment
+  { id: 1, section: "Behavioral", trait: "Leadership", text: "I naturally take charge of team projects and guide others toward a shared vision." },
+  { id: 2, section: "Behavioral", trait: "Teamwork", text: "I value collaboration and ensure everyone's voices are heard during team discussions." },
+  { id: 3, section: "Behavioral", trait: "Communication", text: "I can explain complex ideas clearly to people from diverse backgrounds." },
+  { id: 4, section: "Behavioral", trait: "Adaptability", text: "I adjust quickly when plans change unexpectedly and stay productive." },
+  { id: 5, section: "Behavioral", trait: "Problem-solving", text: "I enjoy breaking down difficult challenges into actionable steps." },
+  { id: 6, section: "Behavioral", trait: "Decision-making", text: "I make logical, timely decisions even when under stress." },
+  { id: 7, section: "Behavioral", trait: "Emotional intelligence", text: "I am empathetic and can manage my emotions effectively during conflicts." },
+  { id: 8, section: "Behavioral", trait: "Time management", text: "I prioritize tasks effectively to meet deadlines." },
+  { id: 9, section: "Behavioral", trait: "Learning attitude", text: "I actively seek feedback and continuously work on self-improvement." },
+  { id: 10, section: "Behavioral", trait: "Responsibility", text: "I take full ownership of mistakes and follow through on my commitments." },
+
+  // Business Orientation Assessment
+  { id: 11, section: "Business", trait: "Entrepreneurial mindset", text: "I constantly look for new business opportunities in everyday challenges." },
+  { id: 12, section: "Business", trait: "Risk-taking ability", text: "I am willing to take calculated risks for potential long-term rewards." },
+  { id: 13, section: "Business", trait: "Innovation", text: "I like finding unique, creative solutions rather than standard approaches." },
+  { id: 14, section: "Business", trait: "Business planning", text: "I structure goals with clear plans and realistic milestones." },
+  { id: 15, section: "Business", trait: "Financial awareness", text: "I manage budgets carefully and understand basic cash flow principles." },
+  { id: 16, section: "Business", trait: "Customer orientation", text: "I prioritize understanding customer needs and feedback above all." },
+  { id: 17, section: "Business", trait: "Market understanding", text: "I follow industry trends and analyze competitors to find market gaps." },
+  { id: 18, section: "Business", trait: "Strategic thinking", text: "I focus on long-term vision rather than just immediate gains." },
+  { id: 19, section: "Business", trait: "Resource management", text: "I organize people, tools, and budgets efficiently to scale." },
+  { id: 20, section: "Business", trait: "Growth mindset", text: "I believe effort and learning can overcome any initial lack of business experience." },
+];
+
+const generateProfileSummary = (behavioralScore: number, businessScore: number) => {
+  const avgB = behavioralScore;
+  const avgBus = businessScore;
+  if (avgB >= 40 && avgBus >= 40) {
+    return "Balanced Founder-Operator: Equipped with robust team leadership, high emotional intelligence, and a sharp entrepreneurial business focus. Highly suited for fast-track scaling.";
+  } else if (avgBus >= 40) {
+    return "Strategic Business Visionary: Strong entrepreneurial drive and high risk-taking ability. Excellent at business planning and market analysis, but could focus on team dynamics.";
+  } else if (avgB >= 40) {
+    return "People-Centric Execution Leader: Exceptional communication, adaptability, and emotional intelligence. Highly effective in leadership and team collaboration, but could refine financial awareness.";
+  } else {
+    return "Developing Aspiring Entrepreneur: Foundations are developing. Would benefit greatly from core mentorship and educational workshops to build business confidence.";
+  }
+};
 
 interface BasicForm {
   name: string;
@@ -226,6 +277,11 @@ export default function Register() {
   const [services, setServices] = useState<string[]>([]);
   const [agreed, setAgreed] = useState(false);
 
+  // Psychometric Assessment State
+  const [currentQIndex, setCurrentQIndex] = useState(0);
+  const [answers, setAnswers] = useState<Record<number, number>>({});
+  const [scores, setScores] = useState({ behavioral: 0, business: 0, overall: 0, summary: "" });
+
   const [basicForm, setBasicForm] = useState<BasicForm>({
     name: "",
     email: "",
@@ -281,9 +337,83 @@ export default function Register() {
     if (step === "basic") setStep("role");
     if (step === "details") setStep("basic");
     if (step === "services") setStep("details");
+    if (step === "psychometric") {
+      if (currentQIndex > 0) {
+        setCurrentQIndex(currentQIndex - 1);
+      } else {
+        setStep("services");
+      }
+    }
   };
 
-  const handleSubmit = () => {
+  const handleFormSubmit = () => {
+    // Navigate to mandatory psychometric test
+    setStep("psychometric");
+    setCurrentQIndex(0);
+  };
+
+  const handleAnswerSelect = (scoreValue: number) => {
+    const q = PSYCH_QUESTIONS[currentQIndex];
+    const newAnswers = { ...answers, [q.id]: scoreValue };
+    setAnswers(newAnswers);
+
+    if (currentQIndex < PSYCH_QUESTIONS.length - 1) {
+      setCurrentQIndex(currentQIndex + 1);
+    }
+  };
+
+  const handleAssessmentSubmit = () => {
+    // Calculate Scores
+    let behavioralTotal = 0;
+    let businessTotal = 0;
+
+    PSYCH_QUESTIONS.forEach((q) => {
+      const val = answers[q.id] || 3; // default to neutral if unanswered
+      if (q.section === "Behavioral") {
+        behavioralTotal += val;
+      } else {
+        businessTotal += val;
+      }
+    });
+
+    const overallTotal = behavioralTotal + businessTotal;
+    const summaryText = generateProfileSummary(behavioralTotal, businessTotal);
+
+    setScores({
+      behavioral: behavioralTotal,
+      business: businessTotal,
+      overall: overallTotal,
+      summary: summaryText,
+    });
+
+    // Save in Simulated DB (Local Storage)
+    const userRoleDetails = role === "mentor" ? mentorForm : role === "entrepreneur" ? entrepreneurForm : traineeForm;
+    const newUser = {
+      name: basicForm.name,
+      email: basicForm.email,
+      phone: basicForm.phone,
+      role: role || "unknown",
+      location: basicForm.location,
+      details: userRoleDetails,
+      services: services,
+      assessment: {
+        behavioralScore: behavioralTotal,
+        businessScore: businessTotal,
+        overallScore: overallTotal,
+        summary: summaryText,
+        submittedAt: new Date().toLocaleDateString(),
+      },
+    };
+
+    const existingUsersString = localStorage.getItem("msme_users");
+    const existingUsers = existingUsersString ? JSON.parse(existingUsersString) : [];
+    existingUsers.push(newUser);
+    localStorage.setItem("msme_users", JSON.stringify(existingUsers));
+
+    setStep("summary");
+  };
+
+  const handleGoToDashboard = () => {
     if (role === "mentor") {
       navigate("/dashboard/mentor");
     } else {
@@ -291,7 +421,7 @@ export default function Register() {
     }
   };
 
-  const stepNum = step === "role" ? 1 : step === "basic" ? 2 : step === "details" ? 3 : 4;
+  const stepNum = step === "role" ? 1 : step === "basic" ? 2 : step === "details" ? 3 : step === "services" ? 4 : 5;
   const serviceOptions = role === "trainee" ? TRAINEE_SUPPORT_OPTIONS : SERVICES_OPTIONS;
   const serviceHeading = role === "mentor" ? "Services I Can Provide" : role === "trainee" ? "Support Required" : "Services Required";
   const serviceDescription =
@@ -306,7 +436,7 @@ export default function Register() {
       <div className="max-w-3xl mx-auto px-6 py-16">
         <div className="mb-10">
           <div className="flex items-center gap-2 mb-6">
-            {stepNum > 1 && (
+            {step !== "role" && step !== "summary" && (
               <button
                 onClick={handleBack}
                 className="flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground transition-colors mr-2"
@@ -315,36 +445,39 @@ export default function Register() {
               </button>
             )}
 
-            <div className="flex items-center gap-2 flex-1 overflow-x-auto pb-1">
-              {[
-                { n: 1, label: "Choose Role" },
-                { n: 2, label: "Basic Details" },
-                { n: 3, label: "Role Details" },
-                { n: 4, label: role === "mentor" ? "Provide" : "Support" },
-              ].map((s, i) => (
-                <div key={s.n} className="flex items-center gap-2 shrink-0">
-                  {i > 0 && <div className={cn("h-px w-8 transition-colors", stepNum > i ? "bg-primary" : "bg-border")} />}
-                  <div className="flex items-center gap-1.5">
-                    <div
-                      className={cn(
-                        "w-6 h-6 rounded-full flex items-center justify-center text-xs font-700 transition-all",
-                        stepNum === s.n
-                          ? "bg-primary text-white"
-                          : stepNum > s.n
-                            ? "bg-green-500 text-white"
-                            : "bg-muted text-muted-foreground"
-                      )}
-                      style={{ fontFamily: "'Barlow Condensed', sans-serif" }}
-                    >
-                      {stepNum > s.n ? <CheckCircle2 size={14} /> : s.n}
+            {step !== "summary" && (
+              <div className="flex items-center gap-2 flex-1 overflow-x-auto pb-1">
+                {[
+                  { n: 1, label: "Choose Role" },
+                  { n: 2, label: "Basic Details" },
+                  { n: 3, label: "Role Details" },
+                  { n: 4, label: role === "mentor" ? "Provide" : "Support" },
+                  { n: 5, label: "Assessment" },
+                ].map((s, i) => (
+                  <div key={s.n} className="flex items-center gap-2 shrink-0">
+                    {i > 0 && <div className={cn("h-px w-8 transition-colors", stepNum > i ? "bg-primary" : "bg-border")} />}
+                    <div className="flex items-center gap-1.5">
+                      <div
+                        className={cn(
+                          "w-6 h-6 rounded-full flex items-center justify-center text-xs font-700 transition-all",
+                          stepNum === s.n
+                            ? "bg-primary text-white"
+                            : stepNum > s.n
+                              ? "bg-green-500 text-white"
+                              : "bg-muted text-muted-foreground"
+                        )}
+                        style={{ fontFamily: "'Barlow Condensed', sans-serif" }}
+                      >
+                        {stepNum > s.n ? <CheckCircle2 size={14} /> : s.n}
+                      </div>
+                      <span className={cn("text-xs font-medium hidden sm:inline", stepNum === s.n ? "text-foreground" : "text-muted-foreground")}>
+                        {s.label}
+                      </span>
                     </div>
-                    <span className={cn("text-xs font-medium hidden sm:inline", stepNum === s.n ? "text-foreground" : "text-muted-foreground")}>
-                      {s.label}
-                    </span>
                   </div>
-                </div>
-              ))}
-            </div>
+                ))}
+              </div>
+            )}
           </div>
 
           <h1
@@ -381,6 +514,16 @@ export default function Register() {
                 {serviceHeading.split(" ")[0]} <span className="text-primary">{serviceHeading.split(" ").slice(1).join(" ")}</span>
               </>
             )}
+            {step === "psychometric" && (
+              <>
+                Psychometric <span className="text-primary">Assessment</span>
+              </>
+            )}
+            {step === "summary" && (
+              <>
+                Account <span className="text-primary">Created</span>
+              </>
+            )}
           </h1>
 
           <p className="text-muted-foreground text-sm mt-2">
@@ -390,6 +533,8 @@ export default function Register() {
             {step === "details" && role === "entrepreneur" && "Tell us about your existing business, startup, or MSME so we can understand what support you need."}
             {step === "details" && role === "trainee" && "Tell us about your background, idea interest, and what you want to learn or explore."}
             {step === "services" && serviceDescription}
+            {step === "psychometric" && "This mandatory assessment helps map your traits and entrepreneurial orientation."}
+            {step === "summary" && "Your registration has completed successfully. Review your assessment summary below."}
           </p>
         </div>
 
@@ -619,7 +764,7 @@ export default function Register() {
               })}
             </div>
 
-            <label className="flex items-start gap-3 rounded-2xl border border-border p-4 bg-muted/30">
+            <label className="flex items-start gap-3 rounded-2xl border border-border p-4 bg-muted/30 cursor-pointer">
               <input type="checkbox" checked={agreed} onChange={(e) => setAgreed(e.target.checked)} className="mt-1" />
               <span className="text-sm text-muted-foreground">
                 I confirm that the information provided is correct and I agree to the platform terms and privacy policy.
@@ -627,14 +772,14 @@ export default function Register() {
             </label>
 
             <button
-              onClick={handleSubmit}
+              onClick={handleFormSubmit}
               disabled={!agreed}
               className={cn(
                 "w-full flex items-center justify-center gap-2 font-semibold py-3.5 rounded-full transition-all shadow-md",
                 agreed ? "bg-primary text-white hover:opacity-90 shadow-orange-100" : "bg-muted text-muted-foreground cursor-not-allowed"
               )}
             >
-              Complete Registration <ArrowRight size={16} />
+              Continue to Psychometric Assessment <ArrowRight size={16} />
             </button>
 
             <div className="rounded-2xl border border-border bg-muted/30 p-4 flex items-start gap-3">
@@ -642,6 +787,130 @@ export default function Register() {
               <p className="text-sm text-muted-foreground">
                 Location, role and selected services will help the platform match users with the right mentors, workshops, consultancy and resources.
               </p>
+            </div>
+          </div>
+        )}
+
+        {/* Mandatory Psychometric Assessment Step */}
+        {step === "psychometric" && (
+          <div className="space-y-6">
+            <div className="flex justify-between items-center text-sm font-mono text-muted-foreground">
+              <span>
+                Question <strong className="text-foreground">{currentQIndex + 1}</strong> of 20
+              </span>
+              <span className="flex items-center gap-2">
+                <Brain size={14} className="text-primary" />
+                <span className="font-semibold text-primary">
+                  {PSYCH_QUESTIONS[currentQIndex].section === "Behavioral" ? "A: Behavioral Traits" : "B: Business Mindset"}
+                </span>
+              </span>
+            </div>
+
+            <div className="w-full bg-muted h-2 rounded-full overflow-hidden">
+              <div
+                className="bg-primary h-full transition-all duration-300"
+                style={{ width: `${((currentQIndex + 1) / 20) * 100}%` }}
+              />
+            </div>
+
+            <div className="bg-muted/30 border border-border rounded-3xl p-8 text-center relative overflow-hidden">
+              <div className="absolute top-2 right-4 text-[9px] font-mono text-muted-foreground uppercase tracking-widest">
+                Evaluating: {PSYCH_QUESTIONS[currentQIndex].trait}
+              </div>
+              <p className="text-xl md:text-2xl text-foreground font-semibold leading-relaxed">
+                "{PSYCH_QUESTIONS[currentQIndex].text}"
+              </p>
+            </div>
+
+            <div className="grid gap-2.5">
+              {[
+                { label: "Strongly Agree", val: 5 },
+                { label: "Agree", val: 4 },
+                { label: "Neutral", val: 3 },
+                { label: "Disagree", val: 2 },
+                { label: "Strongly Disagree", val: 1 },
+              ].map(({ label, val }) => {
+                const active = answers[PSYCH_QUESTIONS[currentQIndex].id] === val;
+                return (
+                  <button
+                    key={val}
+                    onClick={() => handleAnswerSelect(val)}
+                    className={cn(
+                      "w-full text-left border rounded-2xl px-5 py-4 transition-all flex items-center justify-between",
+                      active ? "border-primary bg-orange-50/50 ring-2 ring-primary/10" : "border-border hover:border-primary/30 bg-white"
+                    )}
+                  >
+                    <span className={cn("text-sm font-medium", active ? "text-primary font-bold" : "text-foreground")}>
+                      {label}
+                    </span>
+                    <div className={cn("w-5 h-5 rounded-full border flex items-center justify-center shrink-0", active ? "border-primary bg-primary" : "border-muted-foreground/30")}>
+                      {active && <div className="w-2 h-2 rounded-full bg-white" />}
+                    </div>
+                  </button>
+                );
+              })}
+            </div>
+
+            {currentQIndex === 19 && answers[20] !== undefined && (
+              <button
+                onClick={handleAssessmentSubmit}
+                className="w-full flex items-center justify-center gap-2 bg-primary text-white font-semibold py-4 rounded-full hover:opacity-90 transition-opacity shadow-md shadow-orange-100"
+              >
+                Complete Registration & View Profile <Sparkles size={16} />
+              </button>
+            )}
+          </div>
+        )}
+
+        {/* Summary / Result Page */}
+        {step === "summary" && (
+          <div className="space-y-6 bg-white border border-border rounded-3xl p-8 shadow-sm">
+            <div className="text-center pb-6 border-b border-border">
+              <div className="w-16 h-16 rounded-full bg-green-100 flex items-center justify-center mx-auto mb-4 text-green-600">
+                <CheckCircle2 size={36} />
+              </div>
+              <h2 className="text-2xl font-bold text-foreground">Welcome to the Ecosystem!</h2>
+              <p className="text-sm text-muted-foreground mt-1">
+                Your account is ready, and your psychometric baseline has been registered.
+              </p>
+            </div>
+
+            <div>
+              <h3 className="text-xs font-mono uppercase tracking-widest text-muted-foreground mb-4">
+                Psychometric Assessment Profile
+              </h3>
+              <div className="grid sm:grid-cols-3 gap-4 mb-6">
+                {[
+                  { label: "Overall Score", score: scores.overall, max: 100, color: "text-primary" },
+                  { label: "Behavioral Traits", score: scores.behavioral, max: 50, color: "text-blue-600" },
+                  { label: "Business Mindset", score: scores.business, max: 50, color: "text-green-600" },
+                ].map(({ label, score, max, color }) => (
+                  <div key={label} className="bg-muted/20 border border-border/60 rounded-2xl p-4 text-center">
+                    <div className="text-xs text-muted-foreground">{label}</div>
+                    <div className={cn("text-3xl font-extrabold mt-1", color)}>
+                      {score}
+                      <span className="text-xs text-muted-foreground font-normal">/{max}</span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              <div className="bg-orange-50/50 border border-orange-200/50 rounded-2xl p-5 flex items-start gap-4">
+                <Award className="text-primary shrink-0 mt-0.5" size={20} />
+                <div>
+                  <h4 className="font-bold text-orange-800 text-sm">Ecosystem Profile Summary</h4>
+                  <p className="text-xs text-orange-700 mt-1 leading-relaxed">{scores.summary}</p>
+                </div>
+              </div>
+            </div>
+
+            <div className="pt-4 flex flex-col sm:flex-row gap-3">
+              <button
+                onClick={handleGoToDashboard}
+                className="flex-1 flex items-center justify-center gap-2 bg-primary text-white font-semibold py-3.5 rounded-full hover:opacity-90 transition-opacity shadow-md"
+              >
+                Go to Dashboard <ArrowRight size={16} />
+              </button>
             </div>
           </div>
         )}

@@ -57,6 +57,7 @@ export default function Layout() {
     { label: t.nav_schemes, href: "/schemes" },
     { label: t.nav_content, href: "/content-hub" },
     { label: t.nav_knowledge, href: "/knowledge-center" },
+    { label: "Gallery", href: "/gallery" },
   ];
 
   return (
@@ -186,7 +187,7 @@ export default function Layout() {
               )}
             </div>
 
-            <Link to="/register" className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors px-3 py-1.5">
+            <Link to="/login" className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors px-3 py-1.5">
               {t.nav_login}
             </Link>
             <Link to="/register" className="text-sm font-semibold border-2 border-accent/60 text-accent px-4 py-1.5 rounded-full hover:bg-accent/10 hover:border-accent transition-colors">
