@@ -98,7 +98,7 @@ const SPEC_ICONS: Record<string, React.ElementType> = {
 function MentorCard({ mentor, onConnectClick }: { mentor: typeof MENTORS[0]; onConnectClick: (name: string) => void }) {
   const [hov, setHov] = useState(false);
   return (
-    <div className="bg-white border border-border rounded-2xl overflow-hidden hover:shadow-lg hover:-translate-y-1 transition-all duration-300">
+    <div className="glass-card rounded-2xl overflow-hidden transition-all duration-300">
       <div className="h-1.5" style={{ background: mentor.accent }} />
       <div className="p-6">
         {/* Header */}
@@ -195,13 +195,13 @@ export default function Mentorship() {
   });
 
   return (
-    <div className="min-h-screen bg-muted/30" style={{ fontFamily: "'DM Sans', sans-serif" }}>
+    <div className="min-h-screen bg-background" style={{ fontFamily: "'DM Sans', sans-serif" }}>
       {/* Page hero */}
-      <div className="bg-white border-b border-border py-14 px-6">
-        <div className="max-w-7xl mx-auto text-center">
-          <span className="inline-block font-mono text-[11px] tracking-widest uppercase px-3 py-1 rounded-full border font-medium text-primary border-orange-200 bg-orange-50 mb-4">Expert Mentorship</span>
+      <div className="bg-space-spotlight border-b border-border/40 py-14 px-6 relative overflow-hidden">
+        <div className="max-w-7xl mx-auto text-center relative z-10">
+          <span className="inline-block font-mono text-[11px] tracking-widest uppercase px-3 py-1 rounded-full border font-medium text-primary border-primary/20 bg-primary/10 mb-4">Expert Mentorship</span>
           <h1 className="text-[clamp(40px,6vw,80px)] font-800 uppercase leading-tight text-foreground" style={{ fontFamily: "'Barlow Condensed', sans-serif" }}>
-            Meet Your <span className="text-primary">Mentors.</span>
+            Meet Your <span className="text-neon-gradient">Mentors.</span>
           </h1>
           <p className="mt-4 text-muted-foreground max-w-xl mx-auto text-sm leading-relaxed">
             Vetted domain experts across business, finance, technology, marketing, and operations — ready to accelerate your journey.
@@ -234,7 +234,7 @@ export default function Mentorship() {
               placeholder="Search by name, role, or expertise..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="w-full pl-11 pr-4 py-3 border border-border rounded-xl bg-white text-sm focus:outline-none focus:border-primary transition-colors"
+              className="w-full pl-11 pr-4 py-3 border border-border/40 rounded-xl bg-card text-sm focus:outline-none focus:border-primary transition-colors text-foreground"
             />
           </div>
         </div>
@@ -249,7 +249,7 @@ export default function Mentorship() {
                 onClick={() => setActiveSpec(spec)}
                 className={cn(
                   "flex items-center gap-1.5 text-xs font-semibold px-3.5 py-2 rounded-full border transition-all",
-                  activeSpec === spec ? "bg-primary text-white border-primary" : "border-border text-muted-foreground hover:border-primary/40 hover:text-primary bg-white"
+                  activeSpec === spec ? "bg-primary text-white border-primary" : "border-border/40 text-muted-foreground hover:border-primary/40 hover:text-primary bg-card"
                 )}
               >
                 {spec !== "All" && <Icon size={12} />}
@@ -279,7 +279,7 @@ export default function Mentorship() {
         )}
 
         {/* CTA */}
-        <div className="mt-16 bg-white border-2 border-primary/20 rounded-2xl p-8 text-center">
+        <div className="mt-16 glass-card border-2 border-primary/20 rounded-2xl p-8 text-center">
           <h3 className="text-2xl font-800 uppercase mb-2" style={{ fontFamily: "'Barlow Condensed', sans-serif" }}>
             Ready to get matched?
           </h3>
@@ -295,7 +295,7 @@ export default function Mentorship() {
       {/* Login & Connection Modal */}
       {showLoginModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4 animate-in fade-in duration-200">
-          <div className="bg-white rounded-2xl border border-border shadow-xl max-w-md w-full overflow-hidden animate-in zoom-in-95 duration-200">
+          <div className="bg-card rounded-2xl border border-border/40 shadow-xl max-w-md w-full overflow-hidden animate-in zoom-in-95 duration-200">
             <div className="p-6">
               <h3 className="text-xl font-bold text-gray-900 mb-2" style={{ fontFamily: "'Barlow Condensed', sans-serif" }}>
                 Connect with {selectedMentor}

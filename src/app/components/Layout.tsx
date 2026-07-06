@@ -60,7 +60,7 @@ export default function Layout() {
   ];
 
   return (
-    <div className="min-h-screen bg-background text-foreground" style={{ fontFamily: "'DM Sans', sans-serif" }}>
+    <div className="min-h-screen bg-background text-foreground bg-space-grid relative overflow-hidden" style={{ fontFamily: "'DM Sans', sans-serif" }}>
 
       {/* ── Hero Banner (home only) ── */}
       {isHome && (
@@ -72,12 +72,12 @@ export default function Layout() {
           />
           {/* Overlay */}
           <div
-            className="absolute inset-0"
-            style={{ background: "linear-gradient(135deg, rgba(10,30,80,0.90) 0%, rgba(201,72,14,0.72) 100%)" }}
+            className="absolute inset-0 bg-space-spotlight"
+            style={{ background: "linear-gradient(135deg, rgba(5,5,16,0.92) 0%, rgba(99,102,241,0.25) 100%)" }}
           />
 
           {/* IIT KGP logo watermark */}
-          <div className="absolute top-6 left-6 flex items-center gap-3.5 bg-black/20 backdrop-blur-md px-4 py-2.5 rounded-xl border border-white/15">
+          <div className="absolute top-6 left-6 flex items-center gap-3.5 bg-black/40 backdrop-blur-lg px-4 py-2.5 rounded-xl border border-white/10">
             <img
               src={IIT_KGP_LOGO}
               alt="IIT Kharagpur Logo"
@@ -97,7 +97,7 @@ export default function Layout() {
           </div>
 
           <div className="absolute inset-0 flex flex-col items-center justify-center text-center px-6">
-            <div className="inline-flex items-center gap-2 bg-white/15 border border-white/30 text-white text-xs font-mono uppercase tracking-widest px-4 py-1.5 rounded-full mb-5">
+            <div className="inline-flex items-center gap-2 bg-white/10 border border-white/20 text-white text-xs font-mono uppercase tracking-widest px-4 py-1.5 rounded-full mb-5">
               <img src={IIT_KGP_LOGO} alt="" className="h-4 w-4 object-contain"
                 onError={(e) => { (e.target as HTMLImageElement).style.display = "none"; }} />
               {t.hero_badge}
@@ -108,11 +108,11 @@ export default function Layout() {
             >
               {t.hero_headline}
             </h1>
-            <p className="mt-3 text-white/85 text-base md:text-lg max-w-2xl">{t.hero_sub}</p>
+            <p className="mt-3 text-white/80 text-base md:text-lg max-w-2xl">{t.hero_sub}</p>
           </div>
 
           {/* IIT KGP stamp bottom-right */}
-          <div className="absolute bottom-4 right-5 flex items-center gap-2 bg-black/30 backdrop-blur-sm border border-white/20 rounded-full px-3 py-1.5">
+          <div className="absolute bottom-4 right-5 flex items-center gap-2 bg-black/40 backdrop-blur-md border border-white/10 rounded-full px-3 py-1.5">
             <img src={IIT_KGP_LOGO} alt="" className="h-5 w-5 object-contain"
               onError={(e) => { (e.target as HTMLImageElement).style.display = "none"; }} />
             <span className="text-[10px] text-white/80 font-mono uppercase tracking-wider">IIT Kharagpur Initiative</span>
@@ -123,11 +123,9 @@ export default function Layout() {
       {/* ── Sticky Nav ── */}
       <div
         ref={navRef}
-        className="sticky top-0 z-50 border-b border-border transition-all duration-300"
-        style={{
-          background: navStuck || !isHome ? "rgba(255,255,255,0.97)" : "#fff",
-          backdropFilter: "blur(12px)",
-        }}
+        className={`sticky top-0 z-50 border-b transition-all duration-300 ${
+          navStuck || !isHome ? "glass-navbar" : "bg-transparent border-transparent"
+        }`}
       >
         <div className="max-w-7xl mx-auto px-6 h-14 flex items-center justify-between gap-4">
 
@@ -143,7 +141,7 @@ export default function Layout() {
             <div style={{ fontFamily: "'Barlow Condensed', sans-serif" }} className="hidden sm:block leading-tight">
               <div className="text-[8px] font-mono text-muted-foreground uppercase tracking-widest leading-none">RMSOEE, IIT Kharagpur</div>
               <div className="text-base font-800 tracking-tight text-foreground leading-none uppercase">
-                MSME <span className="text-primary">GROWTH HUB</span>
+                MSME <span className="text-primary text-neon-gradient">GROWTH HUB</span>
               </div>
             </div>
           </Link>
@@ -174,12 +172,12 @@ export default function Layout() {
                 {LANG_OPTIONS.find((l) => l.code === lang)?.short}
               </button>
               {langOpen && (
-                <div className="absolute top-full right-0 mt-1 bg-white border border-border rounded-xl shadow-xl z-50 overflow-hidden w-32">
+                <div className="absolute top-full right-0 mt-1 bg-card border border-border/40 rounded-xl shadow-xl z-50 overflow-hidden w-32 backdrop-blur-md">
                   {LANG_OPTIONS.map((l) => (
                     <button
                       key={l.code}
                       onClick={() => { setLang(l.code); setLangOpen(false); }}
-                      className={`w-full text-left px-3 py-2 text-xs transition-colors font-medium ${lang === l.code ? "bg-orange-50 text-primary" : "hover:bg-muted text-foreground"}`}
+                      className={`w-full text-left px-3 py-2 text-xs transition-colors font-medium ${lang === l.code ? "bg-primary/10 text-primary" : "hover:bg-muted/40 text-foreground"}`}
                     >
                       <span className="text-sm">{l.label}</span>
                     </button>
@@ -191,7 +189,7 @@ export default function Layout() {
             <Link to="/register" className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors px-3 py-1.5">
               {t.nav_login}
             </Link>
-            <Link to="/register" className="text-sm font-semibold border-2 border-accent text-accent px-4 py-1.5 rounded-full hover:bg-blue-50 transition-colors">
+            <Link to="/register" className="text-sm font-semibold border-2 border-accent/60 text-accent px-4 py-1.5 rounded-full hover:bg-accent/10 hover:border-accent transition-colors">
               {t.nav_register}
             </Link>
             <Link to="/dashboard/mentor" className="text-sm font-semibold bg-primary text-white px-4 py-1.5 rounded-full hover:opacity-90 transition-opacity">
@@ -206,7 +204,7 @@ export default function Layout() {
 
         {/* Mobile menu */}
         {menuOpen && (
-          <div className="md:hidden bg-white border-t border-border px-6 py-5 flex flex-col gap-3 shadow-lg">
+          <div className="md:hidden bg-card/95 border-t border-border/40 px-6 py-5 flex flex-col gap-3 shadow-lg backdrop-blur-lg">
             {CENTER_LINKS.map((l) => (
               <button key={l.href} onClick={() => handleNav(l.href)} className="text-left text-base text-muted-foreground hover:text-foreground py-1">
                 {l.label}
@@ -214,12 +212,12 @@ export default function Layout() {
             ))}
 
             {/* Mobile language switcher */}
-            <div className="flex gap-1.5 pt-2 border-t border-border">
+            <div className="flex gap-1.5 pt-2 border-t border-border/40">
               {LANG_OPTIONS.map((l) => (
                 <button
                   key={l.code}
                   onClick={() => setLang(l.code)}
-                  className={`flex-1 py-2 rounded-xl border text-xs font-semibold transition-all ${lang === l.code ? "bg-primary text-white border-primary" : "border-border text-muted-foreground"}`}
+                  className={`flex-1 py-2 rounded-xl border text-xs font-semibold transition-all ${lang === l.code ? "bg-primary text-white border-primary" : "border-border/40 text-muted-foreground"}`}
                 >
                   {l.label}
                 </button>
@@ -227,7 +225,7 @@ export default function Layout() {
             </div>
 
             <div className="flex gap-3 pt-1">
-              <Link to="/register" onClick={() => setMenuOpen(false)} className="flex-1 text-center border-2 border-accent text-accent text-sm font-semibold py-2.5 rounded-full">
+              <Link to="/register" onClick={() => setMenuOpen(false)} className="flex-1 text-center border-2 border-accent/60 text-accent text-sm font-semibold py-2.5 rounded-full hover:bg-accent/10 hover:border-accent">
                 {t.nav_register}
               </Link>
               <Link to="/dashboard/mentor" onClick={() => setMenuOpen(false)} className="flex-1 text-center bg-primary text-white text-sm font-semibold py-2.5 rounded-full">

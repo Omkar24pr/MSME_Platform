@@ -1,0 +1,61 @@
+/* Reusable global utility classes for the MSME platform supporting light & dark themes */
+
+.bg-space-grid {
+  position: relative;
+}
+
+.bg-space-grid::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background-image: 
+    linear-gradient(to right, var(--grid-line) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--grid-line) 1px, transparent 1px);
+  background-size: 50px 50px;
+  mask-image: radial-gradient(ellipse at center, rgba(0, 0, 0, 1) 50%, transparent 100%);
+  -webkit-mask-image: radial-gradient(ellipse at center, rgba(0, 0, 0, 1) 50%, transparent 100%);
+}
+
+.bg-space-spotlight {
+  position: relative;
+  background-image: 
+    radial-gradient(circle at 50% -20%, var(--spotlight-gradient-1) 0%, transparent 60%),
+    radial-gradient(circle at 90% 50%, var(--spotlight-gradient-2) 0%, transparent 50%);
+}
+
+.glass-card {
+  background: var(--glass-bg) !important;
+  backdrop-filter: blur(12px) !important;
+  -webkit-backdrop-filter: blur(12px) !important;
+  border: 1px solid var(--glass-border) !important;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+.glass-card:hover {
+  border-color: rgba(59, 130, 246, 0.3) !important;
+  box-shadow: 0 10px 30px -10px rgba(59, 130, 246, 0.15), 0 1px 3px rgba(0, 0, 0, 0.02) !important;
+  transform: translateY(-2px) !important;
+}
+
+.text-neon-gradient {
+  background: var(--neon-gradient) !important;
+  -webkit-background-clip: text !important;
+  background-clip: text !important;
+  -webkit-text-fill-color: transparent !important;
+}
+
+.text-silver-gradient {
+  background: var(--silver-gradient) !important;
+  -webkit-background-clip: text !important;
+  background-clip: text !important;
+  -webkit-text-fill-color: transparent !important;
+}
+
+.glass-navbar {
+  background: var(--glass-navbar-bg) !important;
+  backdrop-filter: blur(16px) !important;
+  -webkit-backdrop-filter: blur(16px) !important;
+  border-bottom: 1px solid var(--glass-border) !important;
+}

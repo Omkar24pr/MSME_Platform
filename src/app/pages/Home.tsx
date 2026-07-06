@@ -226,7 +226,7 @@ function PsychometricTest({ onQualify }: { onQualify: () => void }) {
 
   if (phase === "intro") return (
     <div className="max-w-2xl mx-auto text-center">
-      <div className="w-16 h-16 rounded-2xl bg-orange-50 border-2 border-orange-200 flex items-center justify-center mx-auto mb-6">
+      <div className="w-16 h-16 rounded-2xl bg-primary/10 border-2 border-primary/20 flex items-center justify-center mx-auto mb-6">
         <Brain size={30} className="text-primary" />
       </div>
       <h3 className="text-3xl font-800 uppercase mb-3" style={{ fontFamily: "'Barlow Condensed', sans-serif" }}>Founder Psychometric Assessment</h3>
@@ -258,7 +258,7 @@ function PsychometricTest({ onQualify }: { onQualify: () => void }) {
             <span className="text-xs text-muted-foreground font-mono">/100</span>
           </div>
           {passed ? (
-            <div className="inline-flex items-center gap-2 bg-orange-50 border border-orange-200 text-primary rounded-full px-5 py-2 text-sm font-semibold">
+            <div className="inline-flex items-center gap-2 bg-primary/10 border border-primary/20 text-primary rounded-full px-5 py-2 text-sm font-semibold">
               <Award size={16} /> Qualified for Mentorship
             </div>
           ) : (
@@ -321,7 +321,7 @@ function PsychometricTest({ onQualify }: { onQualify: () => void }) {
           [1, "Strongly Disagree", "This is not true of me"],
         ] as [number, string, string][]).map(([val, label, sub]) => (
           <button key={val} onClick={() => handleAnswer(val)}
-            className={cn("w-full flex items-center justify-between px-5 py-3.5 rounded-xl border text-left transition-all duration-150", answers[q.id] === val ? "border-2 bg-orange-50" : "border-border bg-white hover:border-orange-200 hover:bg-orange-50/40")}
+            className={cn("w-full flex items-center justify-between px-5 py-3.5 rounded-xl border text-left transition-all duration-150", answers[q.id] === val ? "border-2 bg-primary/15" : "border-border/40 bg-card hover:border-primary/40 hover:bg-primary/5")}
             style={answers[q.id] === val ? { borderColor: dim.color } : {}}
           >
             <div>
@@ -365,10 +365,10 @@ export default function Home() {
   return (
     <>
       {/* ── ABOUT US ── */}
-      <section id="about" className="py-16 px-6 bg-secondary/40 border-b border-border">
+      <section id="about" className="py-16 px-6 bg-transparent border-b border-border/40">
         {/* IIT KGP affiliation banner */}
         <div className="max-w-7xl mx-auto mb-10">
-          <div className="flex flex-wrap items-center gap-4 bg-white border border-border rounded-2xl px-6 py-4">
+          <div className="flex flex-wrap items-center gap-4 glass-card rounded-2xl px-6 py-4">
             <img src={IIT_KGP_LOGO} alt="IIT Kharagpur Logo" className="h-14 w-14 object-contain shrink-0"
               onError={(e) => { (e.target as HTMLImageElement).style.display = "none"; }} />
             <div className="flex-1 min-w-0">
@@ -380,7 +380,7 @@ export default function Home() {
             </div>
             <div className="flex flex-wrap gap-2 shrink-0">
               {["NAAC A++ Accredited", "QS World Rank #280", "Est. 1951"].map((tag) => (
-                <span key={tag} className="text-[10px] font-mono uppercase tracking-wider px-2.5 py-1 rounded-full bg-muted text-muted-foreground border border-border">{tag}</span>
+                <span key={tag} className="text-[10px] font-mono uppercase tracking-wider px-2.5 py-1 rounded-full bg-card/85 text-muted-foreground border border-border/40">{tag}</span>
               ))}
             </div>
           </div>
@@ -391,14 +391,14 @@ export default function Home() {
             <Tag color="#2563EB">{t.about_tag}</Tag>
             <h2 className="mt-4 text-[clamp(32px,5vw,56px)] font-800 uppercase leading-tight" style={{ fontFamily: "'Barlow Condensed', sans-serif" }}>
               {t.about_heading}<br />
-              <span className="text-primary">{t.about_highlight}</span>
+              <span className="text-neon-gradient">{t.about_highlight}</span>
             </h2>
             <p className="mt-5 text-muted-foreground text-sm leading-relaxed max-w-lg">{t.about_body}</p>
             <div className="mt-8 flex flex-wrap gap-4">
-              <Link to="/register" className="inline-flex items-center gap-2 bg-primary text-white font-semibold px-6 py-2.5 rounded-full hover:opacity-90 transition-opacity text-sm shadow-md shadow-orange-100">
+              <Link to="/register" className="inline-flex items-center gap-2 bg-primary text-white font-semibold px-6 py-2.5 rounded-full hover:opacity-90 transition-opacity text-sm shadow-md shadow-primary/20">
                 {t.about_join} <ArrowRight size={15} />
               </Link>
-              <button onClick={() => scrollTo("#services")} className="inline-flex items-center gap-2 border-2 border-accent text-accent font-semibold px-6 py-2.5 rounded-full hover:bg-blue-50 transition-colors text-sm">
+              <button onClick={() => scrollTo("#services")} className="inline-flex items-center gap-2 border-2 border-accent/60 text-accent font-semibold px-6 py-2.5 rounded-full hover:bg-accent/15 transition-colors text-sm">
                 {t.about_services}
               </button>
             </div>
@@ -424,7 +424,7 @@ export default function Home() {
                 { value: "73+", label: "Years of Legacy" },
                 { value: "₹1.6B", label: "Portfolio Value" },
               ].map(({ value, label }) => (
-                <div key={label} className="bg-white border border-border rounded-xl p-4 text-center hover:shadow-sm transition-all">
+                <div key={label} className="glass-card rounded-xl p-4 text-center transition-all">
                   <div className="text-2xl font-800 text-primary" style={{ fontFamily: "'Barlow Condensed', sans-serif" }}>{value}</div>
                   <div className="text-[10px] text-muted-foreground mt-1 font-mono uppercase tracking-wider leading-tight">{label}</div>
                 </div>
@@ -441,7 +441,7 @@ export default function Home() {
             { icon: Zap, color: "#7C3AED" },
             { icon: Award, color: "#059669" },
           ].map(({ icon: Icon, color }, i) => (
-            <div key={i} className="bg-white border border-border rounded-xl p-5 hover:shadow-md transition-all">
+            <div key={i} className="glass-card rounded-xl p-5 transition-all">
               <div className="w-9 h-9 rounded-lg flex items-center justify-center mb-3" style={{ background: `${color}12` }}>
                 <Icon size={18} style={{ color }} />
               </div>
@@ -455,16 +455,16 @@ export default function Home() {
 
 
       {/* ── SERVICES ── */}
-      <section id="services" className="py-20 px-6 bg-white">
+      <section id="services" className="py-20 px-6 bg-transparent border-b border-border/30">
         <div className="max-w-7xl mx-auto">
-          <SectionHeading tag={t.services_tag} tagColor="#2563EB" title={t.services_heading} highlight={t.services_highlight} />
+          <SectionHeading tag={t.services_tag} tagColor="#3b82f6" title={t.services_heading} highlight={t.services_highlight} />
           <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
             {SERVICES.map((svc) => {
               const Icon = svc.icon;
               return (
                 <div
                   key={svc.id}
-                  className="bg-white border-2 rounded-2xl p-6 flex flex-col gap-4 hover:shadow-lg hover:-translate-y-1 transition-all duration-300 cursor-pointer group"
+                  className="glass-card border-2 rounded-2xl p-6 flex flex-col gap-4 cursor-pointer group"
                   style={{ borderColor: `${svc.color}20` }}
                   onClick={() => svc.link.startsWith("/") && !svc.link.includes("#") ? navigate(svc.link) : scrollTo(svc.link.replace("/", ""))}
                 >
@@ -491,7 +491,7 @@ export default function Home() {
 
 
       {/* ── STATS ── */}
-      <section className="py-16 px-6 border-t border-border bg-white" ref={statsRef}>
+      <section className="py-16 px-6 border-b border-border/30 bg-transparent" ref={statsRef}>
         <div className="max-w-7xl mx-auto">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-12">
             {STATS.map((s) => <StatCard key={s.label} {...s} started={statsStarted} />)}
@@ -500,24 +500,24 @@ export default function Home() {
       </section>
 
       {/* ── ARTICLES ── */}
-      <section id="articles" className="py-20 px-6 border-t border-border bg-muted/30">
+      <section id="articles" className="py-20 px-6 border-b border-border/30 bg-transparent">
         <div className="max-w-7xl mx-auto">
           <div className="flex items-start justify-between mb-12 gap-4 flex-wrap">
             <div>
-              <Tag color="#2563EB">{t.articles_tag}</Tag>
+              <Tag color="#3b82f6">{t.articles_tag}</Tag>
               <h2 className="mt-3 text-[clamp(32px,5vw,56px)] font-800 uppercase leading-tight" style={{ fontFamily: "'Barlow Condensed', sans-serif" }}>
-                {t.articles_heading} <span className="text-primary">{t.articles_highlight}</span>
+                {t.articles_heading} <span className="text-neon-gradient">{t.articles_highlight}</span>
               </h2>
             </div>
-            <Link to="/articles" className="mt-8 flex items-center gap-2 border-2 border-accent text-accent font-semibold px-5 py-2 rounded-full hover:bg-blue-50 transition-colors text-sm shrink-0 self-end">
+            <Link to="/articles" className="mt-8 flex items-center gap-2 border-2 border-accent/60 text-accent font-semibold px-5 py-2 rounded-full hover:bg-accent/15 transition-colors text-sm shrink-0 self-end">
               More Articles <ExternalLink size={14} />
             </Link>
           </div>
 
           <div className="grid md:grid-cols-3 gap-6">
             {ARTICLES.map((a) => (
-              <article key={a.id} className="bg-white rounded-2xl border border-border overflow-hidden hover:shadow-md hover:-translate-y-0.5 transition-all duration-300">
-                <div className="h-44 bg-muted overflow-hidden">
+              <article key={a.id} className="glass-card rounded-2xl overflow-hidden transition-all duration-300">
+                <div className="h-44 bg-muted/20 overflow-hidden">
                   <img src={a.image} alt={a.title} className="w-full h-full object-cover" />
                 </div>
                 <div className="p-6">
@@ -542,16 +542,16 @@ export default function Home() {
       </section>
 
       {/* ── ACTIVITIES & EVENTS ── */}
-      <section id="activities" className="py-20 px-6 border-t border-border bg-white">
+      <section id="activities" className="py-20 px-6 border-b border-border/30 bg-transparent">
         <div className="max-w-7xl mx-auto">
           <div className="flex items-start justify-between mb-12 gap-4 flex-wrap">
             <div>
-              <Tag color="#F97316">{t.activities_tag}</Tag>
+              <Tag color="#3b82f6">{t.activities_tag}</Tag>
               <h2 className="mt-3 text-[clamp(32px,5vw,56px)] font-800 uppercase leading-tight" style={{ fontFamily: "'Barlow Condensed', sans-serif" }}>
-                {t.activities_heading} <span className="text-primary">Competitions.</span>
+                {t.activities_heading} <span className="text-neon-gradient">Competitions.</span>
               </h2>
             </div>
-            <Link to="/register" className="mt-8 flex items-center gap-2 border-2 border-primary text-primary font-semibold px-5 py-2 rounded-full hover:bg-orange-50 transition-colors text-sm shrink-0 self-end">
+            <Link to="/register" className="mt-8 flex items-center gap-2 border-2 border-primary/60 text-primary font-semibold px-5 py-2 rounded-full hover:bg-primary/10 transition-colors text-sm shrink-0 self-end">
               Register for Events <ChevronRight size={14} />
             </Link>
           </div>
@@ -564,7 +564,7 @@ export default function Home() {
               { tag: "Competition", title: "Women Entrepreneur Innovation Challenge", date: "Aug 5, 2026", location: "Online", seats: "Unlimited", color: "#DC2626", registrations: 85 },
               { tag: "Summit", title: "STEP-IITKGP Annual Entrepreneurship Summit", date: "Aug 20, 2026", location: "IIT Kharagpur", seats: "500 seats", color: "#0891B2", registrations: 210 },
             ].map((ev) => (
-              <div key={ev.title} className="bg-white border-2 rounded-2xl p-6 hover:shadow-md hover:-translate-y-0.5 transition-all duration-300" style={{ borderColor: `${ev.color}25` }}>
+              <div key={ev.title} className="glass-card border-2 rounded-2xl p-6 transition-all duration-300" style={{ borderColor: `${ev.color}25` }}>
                 <div className="flex items-center justify-between mb-3">
                   <span className="text-[10px] font-mono font-semibold uppercase tracking-wider px-2.5 py-1 rounded-full" style={{ background: `${ev.color}12`, color: ev.color, border: `1px solid ${ev.color}25` }}>{ev.tag}</span>
                   <span className="text-[10px] font-mono text-muted-foreground">{ev.registrations} registered</span>
@@ -584,17 +584,17 @@ export default function Home() {
       </section>
 
       {/* ── PARTNERS & COLLABORATORS ── */}
-      <section className="py-16 px-6 border-t border-border bg-muted/30">
+      <section className="py-16 px-6 border-b border-border/30 bg-transparent">
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-10">
-            <Tag color="#7C3AED">{t.partners_tag}</Tag>
+            <Tag color="#6366f1">{t.partners_tag}</Tag>
             <h2 className="mt-3 text-[clamp(24px,4vw,44px)] font-800 uppercase" style={{ fontFamily: "'Barlow Condensed', sans-serif" }}>
-              {t.partners_heading} <span className="text-primary">{t.partners_sub}</span>
+              {t.partners_heading} <span className="text-neon-gradient">{t.partners_sub}</span>
             </h2>
           </div>
 
           {/* IIT KGP featured prominently */}
-          <div className="bg-white rounded-2xl border-2 border-primary/20 p-6 mb-6 flex flex-wrap items-center gap-6">
+          <div className="glass-card rounded-2xl border-2 border-primary/30 p-6 mb-6 flex flex-wrap items-center gap-6">
             <img src={IIT_KGP_LOGO} alt="IIT Kharagpur Logo" className="h-16 w-16 object-contain shrink-0"
               onError={(e) => { (e.target as HTMLImageElement).style.display = "none"; }} />
             <div className="flex-1 min-w-0">
@@ -605,8 +605,8 @@ export default function Home() {
               <p className="text-xs text-muted-foreground mt-1">Rajendra Mishra School of Engineering Entrepreneurship (RMSOEE) · Ranked #1 in India (NIRF 2024)</p>
             </div>
             <div className="flex gap-2 flex-wrap">
-              <span className="text-[10px] bg-orange-50 border border-orange-200 text-primary px-2.5 py-1 rounded-full font-semibold">Founding Institution</span>
-              <span className="text-[10px] bg-blue-50 border border-blue-200 text-accent px-2.5 py-1 rounded-full font-semibold">Est. 1951</span>
+              <span className="text-[10px] bg-primary/10 border border-primary/30 text-primary px-2.5 py-1 rounded-full font-semibold">Founding Institution</span>
+              <span className="text-[10px] bg-accent/10 border border-accent/30 text-accent px-2.5 py-1 rounded-full font-semibold">Est. 1951</span>
             </div>
           </div>
 
@@ -619,7 +619,7 @@ export default function Home() {
               { name: "NASSCOM", type: "Industry", color: "#0891B2" },
               { name: "SIDBI", type: "Finance", color: "#D97706" },
             ].map((p) => (
-              <div key={p.name} className="bg-white rounded-2xl border border-border p-4 flex flex-col items-center gap-2 hover:shadow-sm transition-all">
+              <div key={p.name} className="glass-card rounded-2xl p-4 flex flex-col items-center gap-2 transition-all">
                 <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ background: `${p.color}12` }}>
                   <Building2 size={20} style={{ color: p.color }} />
                 </div>
@@ -632,13 +632,13 @@ export default function Home() {
       </section>
 
       {/* ── NOTICE BOARD ── */}
-      <section id="notices" className="py-20 px-6 border-t border-border bg-white">
+      <section id="notices" className="py-20 px-6 border-b border-border/30 bg-transparent">
         <div className="max-w-7xl mx-auto">
           <div className="flex items-start justify-between mb-12 flex-wrap gap-4">
             <div>
-              <Tag color="#7C3AED">{t.notices_tag}</Tag>
+              <Tag color="#6366f1">{t.notices_tag}</Tag>
               <h2 className="mt-3 text-[clamp(32px,5vw,56px)] font-800 uppercase leading-tight" style={{ fontFamily: "'Barlow Condensed', sans-serif" }}>
-                {t.notices_heading} <span className="text-accent">{t.notices_sub}</span>
+                {t.notices_heading} <span className="text-accent text-neon-gradient">{t.notices_sub}</span>
               </h2>
             </div>
             <div className="flex items-center gap-2 mt-8 self-end">
@@ -649,11 +649,11 @@ export default function Home() {
 
           <div className="grid md:grid-cols-2 gap-5">
             {NOTICES.map((n) => (
-              <div key={n.id} className="bg-white border-2 rounded-2xl p-6 hover:shadow-sm transition-all" style={{ borderColor: n.pinned ? "#F97316" : "#E2E8F0" }}>
+              <div key={n.id} className="glass-card border-2 rounded-2xl p-6 transition-all" style={{ borderColor: n.pinned ? "rgba(59, 130, 246, 0.4)" : "rgba(255,255,255,0.08)" }}>
                 <div className="flex items-start justify-between gap-3 mb-3">
                   <div className="flex items-center gap-2 flex-wrap">
-                    <span className="text-[10px] font-mono font-semibold uppercase tracking-wider px-2.5 py-1 rounded-full" style={{ background: "#7C3AED12", color: "#7C3AED", border: "1px solid #7C3AED25" }}>{n.tag}</span>
-                    {n.pinned && <span className="text-[10px] font-mono font-semibold uppercase tracking-wider px-2.5 py-1 rounded-full bg-orange-50 border border-orange-200 text-primary">Pinned</span>}
+                    <span className="text-[10px] font-mono font-semibold uppercase tracking-wider px-2.5 py-1 rounded-full" style={{ background: "rgba(99, 102, 241, 0.12)", color: "#818cf8", border: "1px solid rgba(99, 102, 241, 0.25)" }}>{n.tag}</span>
+                    {n.pinned && <span className="text-[10px] font-mono font-semibold uppercase tracking-wider px-2.5 py-1 rounded-full bg-primary/10 border border-primary/20 text-primary">Pinned</span>}
                   </div>
                   <span className="text-[10px] font-mono text-muted-foreground shrink-0">{n.date}</span>
                 </div>
