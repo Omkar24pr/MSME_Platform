@@ -6,14 +6,15 @@ import Login from "./pages/Login";
 import Mentorship from "./pages/Mentorship";
 import Articles from "./pages/Articles";
 import Marketplace from "./pages/Marketplace";
+import ServiceDetail from "./pages/ServiceDetail";
 import Schemes from "./pages/Schemes";
 import Finance from "./pages/Finance";
 import LeadsCRM from "./pages/LeadsCRM";
 import AIAssistant from "./pages/AIAssistant";
 import AISearch from "./pages/AISearch";
-import KnowledgeCenter from "./pages/KnowledgeCenter";
-import ContentHub from "./pages/ContentHub";
+import Resources from "./pages/Resources";
 import Gallery from "./pages/Gallery";
+import Team from "./pages/Team";
 import DocAssistant from "./pages/DocAssistant";
 import SmartDashboard from "./pages/SmartDashboard";
 import DashboardMentor from "./pages/DashboardMentor";
@@ -32,14 +33,17 @@ export const router = createBrowserRouter([
       { path: "mentorship", Component: Mentorship },
       { path: "articles", Component: Articles },
       { path: "services", Component: Marketplace },
+      { path: "services/:serviceId", Component: ServiceDetail },
       { path: "schemes", Component: Schemes },
       { path: "finance", Component: Finance },
       { path: "leads-crm", Component: LeadsCRM },
       { path: "ai-assistant", Component: AIAssistant },
       { path: "ai-search", Component: AISearch },
-      { path: "knowledge-center", Component: KnowledgeCenter },
-      { path: "content-hub", Component: ContentHub },
+      { path: "resources", Component: Resources },
+      { path: "knowledge-center", element: <Navigate to="/resources" replace /> },
+      { path: "content-hub", element: <Navigate to="/resources" replace /> },
       { path: "gallery", Component: Gallery },
+      { path: "team", Component: Team },
       { path: "doc-assistant", Component: DocAssistant },
       { path: "smart-dashboard", Component: SmartDashboard },
       { path: "demo", element: <Navigate to="/dashboard/mentor" replace /> },

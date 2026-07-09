@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link } from "react-router";
 import { CheckCircle2, Clock, FileText, ChevronRight } from "lucide-react";
 
@@ -330,6 +330,10 @@ const schemesByTab: Record<TabKey, Scheme[]> = {
 export default function Schemes() {
   const [filter, setFilter] = useState("all");
 
+  useEffect(() => {
+    document.title = "Explore Government Schemes & Support | MSME Growth Hub";
+  }, []);
+
   const allSchemes = [
     ...governmentSchemes.map((s) => ({ ...s, category: "indian" })),
     ...startupSchemes.map((s) => ({ ...s, category: "startup" })),
@@ -358,10 +362,10 @@ export default function Schemes() {
               className="text-3xl font-bold tracking-tight text-gray-900"
               style={{ fontFamily: "'Barlow Condensed', sans-serif", letterSpacing: "0.02em" }}
             >
-              Schemes &amp; Support
+              Explore Government Schemes &amp; Support
             </h1>
             <p className="text-sm text-gray-500 mt-0.5">
-              MSME Growth Hub &nbsp;&middot;&nbsp; Government Schemes &nbsp;&middot;&nbsp; Startup India &nbsp;&middot;&nbsp; Export Incentives
+              MSME Growth Hub &nbsp;&middot;&nbsp; Explore Government Schemes &amp; Support
             </p>
           </div>
           <div className="flex items-center gap-3">

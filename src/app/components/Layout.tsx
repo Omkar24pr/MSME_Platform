@@ -55,9 +55,9 @@ export default function Layout() {
     { label: t.nav_marketplace, href: "/services" },
     { label: t.nav_mentorship, href: "/mentorship" },
     { label: t.nav_schemes, href: "/schemes" },
-    { label: t.nav_content, href: "/content-hub" },
-    { label: t.nav_knowledge, href: "/knowledge-center" },
+    { label: t.nav_resources, href: "/resources" },
     { label: "Gallery", href: "/gallery" },
+    { label: "Team", href: "/team" },
   ];
 
   return (
@@ -245,3 +245,5 @@ export default function Layout() {
     </div>
   );
 }
+
+

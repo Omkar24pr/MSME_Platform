@@ -157,8 +157,8 @@ export default function FloatingAI() {
               <Link to="/ai-search" onClick={() => setOpen(false)} className="text-[10px] text-muted-foreground hover:text-primary flex items-center gap-1 transition-colors">
                 <Search size={10} /> Search
               </Link>
-              <Link to="/knowledge-center" onClick={() => setOpen(false)} className="text-[10px] text-muted-foreground hover:text-primary flex items-center gap-1 transition-colors">
-                <BookOpen size={10} /> Guides
+              <Link to="/resources" onClick={() => setOpen(false)} className="text-[10px] text-muted-foreground hover:text-primary flex items-center gap-1 transition-colors">
+                <BookOpen size={10} /> Resources
               </Link>
               <Link to="/ai-assistant" onClick={() => setOpen(false)} className="text-[10px] text-primary font-semibold flex items-center gap-0.5 hover:underline">
                 Full <ArrowRight size={9} />

@@ -15,6 +15,7 @@ import {
   Brain,
   Award,
   Sparkles,
+  ShieldAlert,
 } from "lucide-react";
 
 function cn(...classes: (string | false | undefined | null)[]) {
@@ -22,7 +23,7 @@ function cn(...classes: (string | false | undefined | null)[]) {
 }
 
 type Role = "mentor" | "entrepreneur" | "trainee" | null;
-type Step = "role" | "basic" | "details" | "services" | "psychometric" | "summary";
+type Step = "role" | "basic" | "details" | "services";
 
 const EXPERTISE_OPTIONS = [
   "Startup Strategy",
@@ -161,13 +162,14 @@ interface MentorForm {
 }
 
 interface EntrepreneurForm {
-  entrepreneurType: string;
+  isRegistered: string;
+  turnover: string;
+  website: string;
   businessName: string;
   industry: string;
   stage: string;
   teamSize: string;
   revenueStatus: string;
-  website: string;
   businessProblem: string;
 }
 
@@ -301,15 +303,17 @@ export default function Register() {
   });
 
   const [entrepreneurForm, setEntrepreneurForm] = useState<EntrepreneurForm>({
-    entrepreneurType: "",
+    isRegistered: "",
+    turnover: "",
+    website: "",
     businessName: "",
     industry: "",
     stage: "",
     teamSize: "",
     revenueStatus: "",
-    website: "",
     businessProblem: "",
   });
+  const [detailsError, setDetailsError] = useState("");
 
   const [traineeForm, setTraineeForm] = useState<TraineeForm>({
     traineeType: "",
@@ -335,21 +339,76 @@ export default function Register() {
 
   const handleBack = () => {
     if (step === "basic") setStep("role");
-    if (step === "details") setStep("basic");
+    if (step === "details") {
+      setDetailsError("");
+      setStep("basic");
+    }
     if (step === "services") setStep("details");
-    if (step === "psychometric") {
-      if (currentQIndex > 0) {
-        setCurrentQIndex(currentQIndex - 1);
-      } else {
-        setStep("services");
+  };
+
+  const handleEntrepreneurSubmit = () => {
+    setDetailsError("");
+    if (!entrepreneurForm.isRegistered) {
+      setDetailsError("Please select if you are a registered business/entity.");
+      return;
+    }
+    if (entrepreneurForm.isRegistered === "yes") {
+      if (!entrepreneurForm.turnover) {
+        setDetailsError("Current Annual Turnover is required for registered businesses.");
+        return;
+      }
+      if (entrepreneurForm.website.trim()) {
+        const urlPattern = /^(https?:\/\/)?([\da-z.-]+)\.([a-z.]{2,6})([\/\w .-]*)*\/?$/i;
+        if (!urlPattern.test(entrepreneurForm.website.trim())) {
+          setDetailsError("Please enter a valid website URL.");
+          return;
+        }
       }
     }
+    if (!entrepreneurForm.businessName.trim()) {
+      setDetailsError("Business / Startup Name is required.");
+      return;
+    }
+    if (!entrepreneurForm.industry) {
+      setDetailsError("Please select your Industry.");
+      return;
+    }
+    if (!entrepreneurForm.stage) {
+      setDetailsError("Please select your Current Business Stage.");
+      return;
+    }
+    if (!entrepreneurForm.businessProblem.trim()) {
+      setDetailsError("Current Business Challenge is required.");
+      return;
+    }
+    setStep("services");
   };
 
   const handleFormSubmit = () => {
-    // Navigate to mandatory psychometric test
-    setStep("psychometric");
-    setCurrentQIndex(0);
+    // Save in Simulated DB (Local Storage)
+    const userRoleDetails = role === "mentor" ? mentorForm : role === "entrepreneur" ? entrepreneurForm : traineeForm;
+    const newUser = {
+      name: basicForm.name,
+      email: basicForm.email,
+      phone: basicForm.phone,
+      role: role || "unknown",
+      location: basicForm.location,
+      details: userRoleDetails,
+      services: services,
+      registeredAt: new Date().toLocaleDateString(),
+    };
+
+    const existingUsersString = localStorage.getItem("msme_users");
+    const existingUsers = existingUsersString ? JSON.parse(existingUsersString) : [];
+    existingUsers.push(newUser);
+    localStorage.setItem("msme_users", JSON.stringify(existingUsers));
+
+    // Redirect directly to dashboard
+    if (role === "mentor") {
+      navigate("/dashboard/mentor");
+    } else {
+      navigate("/dashboard/mentee");
+    }
   };
 
   const handleAnswerSelect = (scoreValue: number) => {
@@ -421,7 +480,7 @@ export default function Register() {
     }
   };
 
-  const stepNum = step === "role" ? 1 : step === "basic" ? 2 : step === "details" ? 3 : step === "services" ? 4 : 5;
+  const stepNum = step === "role" ? 1 : step === "basic" ? 2 : step === "details" ? 3 : 4;
   const serviceOptions = role === "trainee" ? TRAINEE_SUPPORT_OPTIONS : SERVICES_OPTIONS;
   const serviceHeading = role === "mentor" ? "Services I Can Provide" : role === "trainee" ? "Support Required" : "Services Required";
   const serviceDescription =
@@ -436,7 +495,7 @@ export default function Register() {
       <div className="max-w-3xl mx-auto px-6 py-16">
         <div className="mb-10">
           <div className="flex items-center gap-2 mb-6">
-            {step !== "role" && step !== "summary" && (
+            {step !== "role" && (
               <button
                 onClick={handleBack}
                 className="flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground transition-colors mr-2"
@@ -445,39 +504,36 @@ export default function Register() {
               </button>
             )}
 
-            {step !== "summary" && (
-              <div className="flex items-center gap-2 flex-1 overflow-x-auto pb-1">
-                {[
-                  { n: 1, label: "Choose Role" },
-                  { n: 2, label: "Basic Details" },
-                  { n: 3, label: "Role Details" },
-                  { n: 4, label: role === "mentor" ? "Provide" : "Support" },
-                  { n: 5, label: "Assessment" },
-                ].map((s, i) => (
-                  <div key={s.n} className="flex items-center gap-2 shrink-0">
-                    {i > 0 && <div className={cn("h-px w-8 transition-colors", stepNum > i ? "bg-primary" : "bg-border")} />}
-                    <div className="flex items-center gap-1.5">
-                      <div
-                        className={cn(
-                          "w-6 h-6 rounded-full flex items-center justify-center text-xs font-700 transition-all",
-                          stepNum === s.n
-                            ? "bg-primary text-white"
-                            : stepNum > s.n
-                              ? "bg-green-500 text-white"
-                              : "bg-muted text-muted-foreground"
-                        )}
-                        style={{ fontFamily: "'Barlow Condensed', sans-serif" }}
-                      >
-                        {stepNum > s.n ? <CheckCircle2 size={14} /> : s.n}
-                      </div>
-                      <span className={cn("text-xs font-medium hidden sm:inline", stepNum === s.n ? "text-foreground" : "text-muted-foreground")}>
-                        {s.label}
-                      </span>
+            <div className="flex items-center gap-2 flex-1 overflow-x-auto pb-1">
+              {[
+                { n: 1, label: "Choose Role" },
+                { n: 2, label: "Basic Details" },
+                { n: 3, label: "Role Details" },
+                { n: 4, label: role === "mentor" ? "Provide" : "Support" },
+              ].map((s, i) => (
+                <div key={s.n} className="flex items-center gap-2 shrink-0">
+                  {i > 0 && <div className={cn("h-px w-8 transition-colors", stepNum > i ? "bg-primary" : "bg-border")} />}
+                  <div className="flex items-center gap-1.5">
+                    <div
+                      className={cn(
+                        "w-6 h-6 rounded-full flex items-center justify-center text-xs font-700 transition-all",
+                        stepNum === s.n
+                          ? "bg-primary text-white"
+                          : stepNum > s.n
+                            ? "bg-green-500 text-white"
+                            : "bg-muted text-muted-foreground"
+                      )}
+                      style={{ fontFamily: "'Barlow Condensed', sans-serif" }}
+                    >
+                      {stepNum > s.n ? <CheckCircle2 size={14} /> : s.n}
                     </div>
+                    <span className={cn("text-xs font-medium hidden sm:inline", stepNum === s.n ? "text-foreground" : "text-muted-foreground")}>
+                      {s.label}
+                    </span>
                   </div>
-                ))}
-              </div>
-            )}
+                </div>
+              ))}
+            </div>
           </div>
 
           <h1
@@ -514,16 +570,7 @@ export default function Register() {
                 {serviceHeading.split(" ")[0]} <span className="text-primary">{serviceHeading.split(" ").slice(1).join(" ")}</span>
               </>
             )}
-            {step === "psychometric" && (
-              <>
-                Psychometric <span className="text-primary">Assessment</span>
-              </>
-            )}
-            {step === "summary" && (
-              <>
-                Account <span className="text-primary">Created</span>
-              </>
-            )}
+            {/* removed psychometric & summary steps */}
           </h1>
 
           <p className="text-muted-foreground text-sm mt-2">
@@ -533,22 +580,13 @@ export default function Register() {
             {step === "details" && role === "entrepreneur" && "Tell us about your existing business, startup, or MSME so we can understand what support you need."}
             {step === "details" && role === "trainee" && "Tell us about your background, idea interest, and what you want to learn or explore."}
             {step === "services" && serviceDescription}
-            {step === "psychometric" && "This mandatory assessment helps map your traits and entrepreneurial orientation."}
-            {step === "summary" && "Your registration has completed successfully. Review your assessment summary below."}
+            {/* removed psychometric & summary step descriptions */}
           </p>
         </div>
 
         {step === "role" && (
           <div className="space-y-4">
             {[
-              {
-                value: "mentor" as Role,
-                label: "I'm a Mentor",
-                desc: "Share your expertise with entrepreneurs and trainees by guiding them through business, technology, marketing, and growth challenges.",
-                icon: Users,
-                color: "#2563EB",
-                tags: ["Expert", "Advisor", "Industry Leader"],
-              },
               {
                 value: "entrepreneur" as Role,
                 label: "I'm an Entrepreneur",
@@ -565,11 +603,20 @@ export default function Register() {
                 color: "#059669",
                 tags: ["Student", "Idea Explorer", "Learner"],
               },
+              {
+                value: "mentor" as Role,
+                label: "I'm a Mentor",
+                desc: "Share your expertise with entrepreneurs and trainees by guiding them through business, technology, marketing, and growth challenges.",
+                icon: Users,
+                color: "#2563EB",
+                tags: ["Expert", "Advisor", "Industry Leader"],
+              },
             ].map(({ value, label, desc, icon: Icon, color, tags }) => (
               <button
                 key={value}
                 onClick={() => {
                   setRole(value);
+                  setDetailsError("");
                   setStep("basic");
                 }}
                 className={cn(
@@ -666,37 +713,150 @@ export default function Register() {
 
         {step === "details" && role === "entrepreneur" && (
           <div className="space-y-5 bg-white border border-border rounded-3xl p-6 shadow-sm">
+            {detailsError && (
+              <div className="bg-red-50 border border-red-200 text-red-600 p-4 rounded-2xl flex items-center gap-3 text-sm animate-fadeIn">
+                <ShieldAlert size={18} className="shrink-0" />
+                <span>{detailsError}</span>
+              </div>
+            )}
+
             <div>
-              <label className="block text-xs font-mono uppercase tracking-widest text-muted-foreground mb-2">Entrepreneur Type <span className="text-primary">*</span></label>
-              <div className="grid grid-cols-2 gap-2">
-                {ENTREPRENEUR_TYPES.map(({ value, label, icon: Icon }) => (
-                  <button
-                    key={value}
-                    onClick={() => setEntrepreneurForm({ ...entrepreneurForm, entrepreneurType: value })}
-                    className={cn(
-                      "flex flex-col items-center gap-2 p-3 rounded-xl border-2 text-center transition-all",
-                      entrepreneurForm.entrepreneurType === value ? "border-primary bg-orange-50 text-primary" : "border-border text-muted-foreground hover:border-primary/30"
-                    )}
-                  >
-                    <Icon size={18} />
-                    <span className="text-xs font-medium leading-tight">{label}</span>
-                  </button>
-                ))}
+              <label className="block text-xs font-mono uppercase tracking-widest text-muted-foreground mb-2">
+                Are you a registered business/entity? <span className="text-primary">*</span>
+              </label>
+              <div className="flex gap-6 mt-1">
+                <label className="flex items-center gap-2 cursor-pointer text-sm text-foreground font-semibold">
+                  <input
+                    type="radio"
+                    name="isRegistered"
+                    value="yes"
+                    checked={entrepreneurForm.isRegistered === "yes"}
+                    onChange={() => {
+                      setEntrepreneurForm({ ...entrepreneurForm, isRegistered: "yes" });
+                      setDetailsError("");
+                    }}
+                    className="accent-primary w-4 h-4"
+                  />
+                  Yes
+                </label>
+                <label className="flex items-center gap-2 cursor-pointer text-sm text-foreground font-semibold">
+                  <input
+                    type="radio"
+                    name="isRegistered"
+                    value="no"
+                    checked={entrepreneurForm.isRegistered === "no"}
+                    onChange={() => {
+                      setEntrepreneurForm({ ...entrepreneurForm, isRegistered: "no", turnover: "", website: "" });
+                      setDetailsError("");
+                    }}
+                    className="accent-primary w-4 h-4"
+                  />
+                  No
+                </label>
               </div>
             </div>
 
+            {entrepreneurForm.isRegistered === "yes" && (
+              <div className="grid sm:grid-cols-2 gap-4 animate-fadeIn">
+                <SelectField
+                  label="Current Annual Turnover"
+                  required
+                  value={entrepreneurForm.turnover}
+                  onChange={(v) => {
+                    setEntrepreneurForm({ ...entrepreneurForm, turnover: v });
+                    setDetailsError("");
+                  }}
+                  options={[
+                    "Less than ₹10 Lakhs",
+                    "₹10 Lakhs – ₹50 Lakhs",
+                    "₹50 Lakhs – ₹1 Crore",
+                    "₹1 Crore – ₹5 Crores",
+                    "Above ₹5 Crores",
+                  ]}
+                  placeholder="Select turnover"
+                />
+                <InputField
+                  label="Startup / Business Website"
+                  placeholder="https://yourbusiness.com"
+                  value={entrepreneurForm.website}
+                  onChange={(v) => {
+                    setEntrepreneurForm({ ...entrepreneurForm, website: v });
+                    setDetailsError("");
+                  }}
+                />
+              </div>
+            )}
+
             <div className="grid sm:grid-cols-2 gap-4">
-              <InputField label="Business / Startup Name" required placeholder="Your venture name" value={entrepreneurForm.businessName} onChange={(v) => setEntrepreneurForm({ ...entrepreneurForm, businessName: v })} />
-              <SelectField label="Industry" required value={entrepreneurForm.industry} onChange={(v) => setEntrepreneurForm({ ...entrepreneurForm, industry: v })} options={INDUSTRIES} placeholder="Select industry" />
-              <SelectField label="Current Business Stage" required value={entrepreneurForm.stage} onChange={(v) => setEntrepreneurForm({ ...entrepreneurForm, stage: v })} options={BUSINESS_STAGES} placeholder="Select stage" />
-              <SelectField label="Team Size" value={entrepreneurForm.teamSize} onChange={(v) => setEntrepreneurForm({ ...entrepreneurForm, teamSize: v })} options={["Solo", "2–5", "6–10", "11–25", "25+"]} placeholder="Select team size" />
-              <SelectField label="Revenue Status" value={entrepreneurForm.revenueStatus} onChange={(v) => setEntrepreneurForm({ ...entrepreneurForm, revenueStatus: v })} options={["No revenue yet", "Early revenue", "Monthly revenue", "Profitable", "Funded"]} placeholder="Select revenue status" />
-              <InputField label="Website / Social Link" placeholder="https://yourstartup.com" value={entrepreneurForm.website} onChange={(v) => setEntrepreneurForm({ ...entrepreneurForm, website: v })} />
+              <InputField
+                label="Business / Startup Name"
+                required
+                placeholder="Your venture name"
+                value={entrepreneurForm.businessName}
+                onChange={(v) => {
+                  setEntrepreneurForm({ ...entrepreneurForm, businessName: v });
+                  setDetailsError("");
+                }}
+              />
+              <SelectField
+                label="Industry"
+                required
+                value={entrepreneurForm.industry}
+                onChange={(v) => {
+                  setEntrepreneurForm({ ...entrepreneurForm, industry: v });
+                  setDetailsError("");
+                }}
+                options={INDUSTRIES}
+                placeholder="Select industry"
+              />
+              <SelectField
+                label="Current Business Stage"
+                required
+                value={entrepreneurForm.stage}
+                onChange={(v) => {
+                  setEntrepreneurForm({ ...entrepreneurForm, stage: v });
+                  setDetailsError("");
+                }}
+                options={BUSINESS_STAGES}
+                placeholder="Select stage"
+              />
+              <SelectField
+                label="Team Size"
+                value={entrepreneurForm.teamSize}
+                onChange={(v) => {
+                  setEntrepreneurForm({ ...entrepreneurForm, teamSize: v });
+                  setDetailsError("");
+                }}
+                options={["Solo", "2–5", "6–10", "11–25", "25+"]}
+                placeholder="Select team size"
+              />
+              <SelectField
+                label="Revenue Status"
+                value={entrepreneurForm.revenueStatus}
+                onChange={(v) => {
+                  setEntrepreneurForm({ ...entrepreneurForm, revenueStatus: v });
+                  setDetailsError("");
+                }}
+                options={["No revenue yet", "Early revenue", "Monthly revenue", "Profitable", "Funded"]}
+                placeholder="Select revenue status"
+              />
             </div>
 
-            <TextAreaField label="Current Business Challenge" required placeholder="Tell us what support you need now: funding, marketing, technology, product, operations, sales, etc." value={entrepreneurForm.businessProblem} onChange={(v) => setEntrepreneurForm({ ...entrepreneurForm, businessProblem: v })} />
+            <TextAreaField
+              label="Current Business Challenge"
+              required
+              placeholder="Tell us what support you need now: funding, marketing, technology, product, operations, sales, etc."
+              value={entrepreneurForm.businessProblem}
+              onChange={(v) => {
+                setEntrepreneurForm({ ...entrepreneurForm, businessProblem: v });
+                setDetailsError("");
+              }}
+            />
 
-            <button onClick={() => setStep("services")} className="w-full flex items-center justify-center gap-2 bg-primary text-white font-semibold py-3.5 rounded-full hover:opacity-90 transition-opacity shadow-md shadow-orange-100">
+            <button
+              onClick={handleEntrepreneurSubmit}
+              className="w-full flex items-center justify-center gap-2 bg-primary text-white font-semibold py-3.5 rounded-full hover:opacity-90 transition-opacity shadow-md shadow-orange-100"
+            >
               Continue to Services <ArrowRight size={16} />
             </button>
           </div>
@@ -779,7 +939,7 @@ export default function Register() {
                 agreed ? "bg-primary text-white hover:opacity-90 shadow-orange-100" : "bg-muted text-muted-foreground cursor-not-allowed"
               )}
             >
-              Continue to Psychometric Assessment <ArrowRight size={16} />
+              Complete Registration <ArrowRight size={16} />
             </button>
 
             <div className="rounded-2xl border border-border bg-muted/30 p-4 flex items-start gap-3">
@@ -791,129 +951,7 @@ export default function Register() {
           </div>
         )}
 
-        {/* Mandatory Psychometric Assessment Step */}
-        {step === "psychometric" && (
-          <div className="space-y-6">
-            <div className="flex justify-between items-center text-sm font-mono text-muted-foreground">
-              <span>
-                Question <strong className="text-foreground">{currentQIndex + 1}</strong> of 20
-              </span>
-              <span className="flex items-center gap-2">
-                <Brain size={14} className="text-primary" />
-                <span className="font-semibold text-primary">
-                  {PSYCH_QUESTIONS[currentQIndex].section === "Behavioral" ? "A: Behavioral Traits" : "B: Business Mindset"}
-                </span>
-              </span>
-            </div>
-
-            <div className="w-full bg-muted h-2 rounded-full overflow-hidden">
-              <div
-                className="bg-primary h-full transition-all duration-300"
-                style={{ width: `${((currentQIndex + 1) / 20) * 100}%` }}
-              />
-            </div>
-
-            <div className="bg-muted/30 border border-border rounded-3xl p-8 text-center relative overflow-hidden">
-              <div className="absolute top-2 right-4 text-[9px] font-mono text-muted-foreground uppercase tracking-widest">
-                Evaluating: {PSYCH_QUESTIONS[currentQIndex].trait}
-              </div>
-              <p className="text-xl md:text-2xl text-foreground font-semibold leading-relaxed">
-                "{PSYCH_QUESTIONS[currentQIndex].text}"
-              </p>
-            </div>
-
-            <div className="grid gap-2.5">
-              {[
-                { label: "Strongly Agree", val: 5 },
-                { label: "Agree", val: 4 },
-                { label: "Neutral", val: 3 },
-                { label: "Disagree", val: 2 },
-                { label: "Strongly Disagree", val: 1 },
-              ].map(({ label, val }) => {
-                const active = answers[PSYCH_QUESTIONS[currentQIndex].id] === val;
-                return (
-                  <button
-                    key={val}
-                    onClick={() => handleAnswerSelect(val)}
-                    className={cn(
-                      "w-full text-left border rounded-2xl px-5 py-4 transition-all flex items-center justify-between",
-                      active ? "border-primary bg-orange-50/50 ring-2 ring-primary/10" : "border-border hover:border-primary/30 bg-white"
-                    )}
-                  >
-                    <span className={cn("text-sm font-medium", active ? "text-primary font-bold" : "text-foreground")}>
-                      {label}
-                    </span>
-                    <div className={cn("w-5 h-5 rounded-full border flex items-center justify-center shrink-0", active ? "border-primary bg-primary" : "border-muted-foreground/30")}>
-                      {active && <div className="w-2 h-2 rounded-full bg-white" />}
-                    </div>
-                  </button>
-                );
-              })}
-            </div>
-
-            {currentQIndex === 19 && answers[20] !== undefined && (
-              <button
-                onClick={handleAssessmentSubmit}
-                className="w-full flex items-center justify-center gap-2 bg-primary text-white font-semibold py-4 rounded-full hover:opacity-90 transition-opacity shadow-md shadow-orange-100"
-              >
-                Complete Registration & View Profile <Sparkles size={16} />
-              </button>
-            )}
-          </div>
-        )}
-
-        {/* Summary / Result Page */}
-        {step === "summary" && (
-          <div className="space-y-6 bg-white border border-border rounded-3xl p-8 shadow-sm">
-            <div className="text-center pb-6 border-b border-border">
-              <div className="w-16 h-16 rounded-full bg-green-100 flex items-center justify-center mx-auto mb-4 text-green-600">
-                <CheckCircle2 size={36} />
-              </div>
-              <h2 className="text-2xl font-bold text-foreground">Welcome to the Ecosystem!</h2>
-              <p className="text-sm text-muted-foreground mt-1">
-                Your account is ready, and your psychometric baseline has been registered.
-              </p>
-            </div>
-
-            <div>
-              <h3 className="text-xs font-mono uppercase tracking-widest text-muted-foreground mb-4">
-                Psychometric Assessment Profile
-              </h3>
-              <div className="grid sm:grid-cols-3 gap-4 mb-6">
-                {[
-                  { label: "Overall Score", score: scores.overall, max: 100, color: "text-primary" },
-                  { label: "Behavioral Traits", score: scores.behavioral, max: 50, color: "text-blue-600" },
-                  { label: "Business Mindset", score: scores.business, max: 50, color: "text-green-600" },
-                ].map(({ label, score, max, color }) => (
-                  <div key={label} className="bg-muted/20 border border-border/60 rounded-2xl p-4 text-center">
-                    <div className="text-xs text-muted-foreground">{label}</div>
-                    <div className={cn("text-3xl font-extrabold mt-1", color)}>
-                      {score}
-                      <span className="text-xs text-muted-foreground font-normal">/{max}</span>
-                    </div>
-                  </div>
-                ))}
-              </div>
-
-              <div className="bg-orange-50/50 border border-orange-200/50 rounded-2xl p-5 flex items-start gap-4">
-                <Award className="text-primary shrink-0 mt-0.5" size={20} />
-                <div>
-                  <h4 className="font-bold text-orange-800 text-sm">Ecosystem Profile Summary</h4>
-                  <p className="text-xs text-orange-700 mt-1 leading-relaxed">{scores.summary}</p>
-                </div>
-              </div>
-            </div>
-
-            <div className="pt-4 flex flex-col sm:flex-row gap-3">
-              <button
-                onClick={handleGoToDashboard}
-                className="flex-1 flex items-center justify-center gap-2 bg-primary text-white font-semibold py-3.5 rounded-full hover:opacity-90 transition-opacity shadow-md"
-              >
-                Go to Dashboard <ArrowRight size={16} />
-              </button>
-            </div>
-          </div>
-        )}
+        {/* psychometric step screens removed */}
       </div>
     </div>
   );

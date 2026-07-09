@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+﻿import { useState, useEffect, useRef } from "react";
 import { Link, useNavigate } from "react-router";
 import {
   ArrowRight, ChevronDown, CheckCircle2, Users, Zap, BarChart3,
@@ -72,6 +72,11 @@ const PASS_THRESHOLD = 70;
 
 const SERVICES = [
   {
+    icon: Briefcase, id: "consultancy", label: "Business Consultancy", color: "#7C3AED",
+    desc: "Strategic advisory for business model design, market entry, and operational excellence.",
+    link: "/services/consultancy",
+  },
+  {
     icon: Users, id: "mentorship", label: "Mentorship", color: "#F97316",
     desc: "Get matched 1-on-1 with domain experts who have built and scaled businesses like yours.",
     link: "/mentorship",
@@ -79,22 +84,17 @@ const SERVICES = [
   {
     icon: GraduationCap, id: "training", label: "Training", color: "#2563EB",
     desc: "Structured learning programs, workshops, and bootcamps tailored for MSMEs and founders.",
-    link: "/#contact",
-  },
-  {
-    icon: Briefcase, id: "consultancy", label: "Business Consultancy", color: "#7C3AED",
-    desc: "Strategic advisory for business model design, market entry, and operational excellence.",
-    link: "/#contact",
+    link: "/services/training",
   },
   {
     icon: Lightbulb, id: "marketing", label: "Marketing Support", color: "#059669",
     desc: "GTM strategy, branding, digital marketing, and customer acquisition frameworks.",
-    link: "/#contact",
+    link: "/services/marketing",
   },
   {
     icon: Building2, id: "technology", label: "Technology Support", color: "#DC2626",
     desc: "Tech stack guidance, CTO advisory, digital transformation, and product architecture.",
-    link: "/#contact",
+    link: "/services/technology",
   },
 ];
 
@@ -458,7 +458,7 @@ export default function Home() {
       <section id="services" className="py-20 px-6 bg-transparent border-b border-border/30">
         <div className="max-w-7xl mx-auto">
           <SectionHeading tag={t.services_tag} tagColor="#3b82f6" title={t.services_heading} highlight={t.services_highlight} />
-          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-5">
             {SERVICES.map((svc) => {
               const Icon = svc.icon;
               return (
@@ -669,7 +669,6 @@ export default function Home() {
       </section>
 
 
-
       {/* ── FOOTER ── */}
       <footer className="bg-foreground text-white">
         <div className="max-w-7xl mx-auto px-6 py-14">
@@ -710,6 +709,7 @@ export default function Home() {
                   { label: "Services", href: "/services" },
                   { label: "Mentorship", href: "/mentorship" },
                   { label: "Schemes & Support", href: "/schemes" },
+                  { label: "Resources Hub", href: "/resources" },
                   { label: "Finance & Loans", href: "/finance" },
                   { label: "Articles", href: "/articles" },
                 ].map(({ label, href }) => (
@@ -769,3 +769,5 @@ export default function Home() {
     </>
   );
 }
+
+

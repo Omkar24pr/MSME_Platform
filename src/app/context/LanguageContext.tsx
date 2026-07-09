@@ -6,6 +6,7 @@ export interface T {
   // Nav
   nav_marketplace: string; nav_mentorship: string; nav_schemes: string;
   nav_content: string; nav_ai_search: string; nav_knowledge: string;
+  nav_resources: string;
   nav_login: string; nav_register: string; nav_dashboard: string;
   // Hero
   hero_badge: string; hero_headline: string; hero_sub: string;
@@ -35,6 +36,7 @@ const translations: Record<Lang, T> = {
   en: {
     nav_marketplace: "Services", nav_mentorship: "Mentorship", nav_schemes: "Schemes",
     nav_content: "Content", nav_ai_search: "AI Search", nav_knowledge: "Knowledge",
+    nav_resources: "Resources",
     nav_login: "Login", nav_register: "Register", nav_dashboard: "Dashboard",
     hero_badge: "IIT Kharagpur · MSME & Startup Growth Platform",
     hero_headline: "One Platform to Grow, Connect and Scale Your Business",
@@ -71,6 +73,7 @@ const translations: Record<Lang, T> = {
   hi: {
     nav_marketplace: "सेवाएं", nav_mentorship: "मेंटरशिप", nav_schemes: "योजनाएं",
     nav_content: "सामग्री", nav_ai_search: "AI खोज", nav_knowledge: "ज्ञान केंद्र",
+    nav_resources: "संसाधन",
     nav_login: "लॉगिन", nav_register: "पंजीकरण", nav_dashboard: "डैशबोर्ड",
     hero_badge: "आईआईटी खड़गपुर · एमएसएमई और स्टार्टअप ग्रोथ प्लेटफॉर्म",
     hero_headline: "व्यापार को बढ़ाने, जोड़ने और स्केल करने का एक मंच",
@@ -107,6 +110,7 @@ const translations: Record<Lang, T> = {
   bn: {
     nav_marketplace: "সেবাসমূহ", nav_mentorship: "মেন্টরশিপ", nav_schemes: "প্রকল্পসমূহ",
     nav_content: "বিষয়বস্তু", nav_ai_search: "AI অনুসন্ধান", nav_knowledge: "জ্ঞান কেন্দ্র",
+    nav_resources: "সম্পদ",
     nav_login: "লগইন", nav_register: "নিবন্ধন", nav_dashboard: "ড্যাশবোর্ড",
     hero_badge: "আইআইটি খড়গপুর · এমএসএমই ও স্টার্টআপ গ্রোথ প্ল্যাটফর্ম",
     hero_headline: "ব্যবসা বৃদ্ধি, সংযোগ ও স্কেল করার একটি প্ল্যাটফর্ম",

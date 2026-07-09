@@ -56,8 +56,7 @@ export default function NotFound() {
               { label: "Schemes & Support", href: "/schemes" },
               { label: "Finance & Loans", href: "/finance" },
               { label: "AI Assistant", href: "/ai-assistant" },
-              { label: "Knowledge Center", href: "/knowledge-center" },
-              { label: "Content Hub", href: "/content-hub" },
+              { label: "Resources Hub", href: "/resources" },
               { label: "Smart Dashboard", href: "/smart-dashboard" },
             ].map((l) => (
               <Link
